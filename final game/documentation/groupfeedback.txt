@@ -1,0 +1,32 @@
+It Follows: 
+Commentator: Nobel
+Develpers: Alex and Ellis
+
+
+Pros; 
+-	Random tree generation: I am impressed by how the trees are randomly generated in a very, very large backfound
+-	Backgounrd: Very big background(which is impressive) but repeating smaller backgrounds might be better
+-	Mario moves left right as per animation ( good)
+-	Screen blitting is smooth 
+Things to consider
+-	In depth sense: consider blitting objects with a precedence depending on their yposition. For instance, If mario is going under the tree, he should be blitted after the tree, and vice versa. This way depth perception real
+-	Water beneath the tree: the shadows seem like a water body. Particle effects could be used
+-	Shadow/footprint trails of mario could also make it coolder
+-	Particle effects around the tree might add more life and make sure that the game has not frozen. 
+-	Alternatively, stop state animation on Mario might also serve as a “game-stuck” checking mechanism
+-	What heuristics are you going to use to follow Mario? Manhattan could be easier if less pathing is preferred. Euclidean might me better however. 
+
+
+Mario Plus
+Commentator: Nobel
+Developers: Will , Armondo
+
+Things to consider: 
+-Two screen multiplayer; This is slightly confusing at the begninng, but makes sense at the end. Perhaps try consider using a minmap or socket programming to make it cross over two computers. 
+-Single Multiplayer: Very good controller system. Sometimes, jumps can be hard to envision, so shadows might help. Moreover, some jumps might be hard to do. 
+-Controls: making the B button the control might be a bit ambivalent for both jumping and menu selecting. Try to make jump the up key in the joystick. 
+-In the menu, try to make it such that the arrows are clearer onto what menu
+-Tutorial option with which sign corresponds to what might be better. 
+- Die amination of Mario might be further continued ( with sound maybe) as sometimes, I am not sure if he died until the game says game over. 
+
+

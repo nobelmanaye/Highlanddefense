@@ -28,6 +28,7 @@ class drawable(object):
       self.imageres = self.image
       self.animation = animation
       self.starttime = 1
+      self.cursor = 1
      
       #generate starting conditions for the orb(including random desired speeds, velocity & position vecs)
       
@@ -107,6 +108,8 @@ class drawable(object):
       frame = framerate
 
       time = clock.get_ticks()/1000
+
+      self.image = pygame.image.load(os.path.join("images\other",str(self.animation)+str(max(1,round(self.cursor/frame)))+".png")).convert()
       if (time -self.starttime > 0.7):
 
                # Update time every 2.1 ish seconds
@@ -114,7 +117,7 @@ class drawable(object):
                self.changetime(time)
             
                        
-               if self.cursor >7*frame:
+               if self.cursor >maxframe*frame:
                   # If the animation frame is greater than seven (only seven walking animation frames) then reset the cursor
                   self.cursor = 1
                # change animation frame as per the animation cursor
@@ -122,13 +125,11 @@ class drawable(object):
                  
                   
 
-               if self.cursor <=7*frame:
+               if self.cursor <=maxframe*frame:
                   #Move the Animatioon framecursor as long as it is below the frame amount
                   self.cursor +=1
-               if self.cursor >7*frame:
+               if self.cursor >maxframe*frame:
                   self.cursor = 1
-               if self.cursor in(5*frame,frame):
-                  
-                  self.cursor += (round(frame/1.5))
+               
               
 

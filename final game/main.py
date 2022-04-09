@@ -58,7 +58,7 @@ def main():
    notenoughim = os.path.join("images","Notenough.png")
    leftclick = panel(leftclickpath,leftclickpath,800,400)
    rightclick = panel(rightclickpath,rightclickpath,300,400)
-   notenough = panel(notenoughim,notenoughim,700,200)
+   notenough = panel(notenoughim,notenoughim,874,308)
    mouse1 =os.path.join("images", "mouse.png")
    goldpath = os.path.join("images", "gold.png")
    treepath = os.path.join("images","tree.png")
@@ -495,7 +495,7 @@ def main():
            timer = time
            if played == False:
 
-            #siren.play()
+            siren.play()
             played = True
            
         if abs(oldtime-time) > interval:
@@ -534,7 +534,7 @@ def main():
                   
                   riflesold = Rifleman(riflepath,randposx-30,randposy+i*(ychange))
                   spearman = Pikeman("Red",randposx+10,randposy+i*(ychange))
-                  if 2 == random.randint(1,max(2,cannonlimit)):
+                  if 2 == 1:
                      artillery = cannon("Red",randposx-5,randposy+i*(ychange))
                      artillery.beginmoving((260+i*(round(xchange)), 350+i*round(ychange)))
                      
@@ -570,7 +570,7 @@ def main():
       # Draw everything, adjust by offset
         screen.blit(background,list((0,0)))
         if warn == True:
-           screen.blit(warningtxt,(800,60))
+           screen.blit(warningtxt,(874,308))
       
         isbarrackselected = False
         istowerselected = False
@@ -651,22 +651,6 @@ def main():
            flamelst.append(flame)
 
 
-        if len(enemylst) > 0:
-         for enemy in enemylst:
-            
-            fullenemies = [item for item in allymilitary]
-            fullenemies.append(home)
-            enemy.shoot(pygame.time,projectilelst,fullenemies,time)
-            enemy.go(gameClock,buildinglst)
-            enemy.walk(pygame.time)
-            
-            enemy.draw(screen)
-            
-            
-            if enemy.isDead():
-                #rint("remving")
-                enemylst.remove(enemy)
-                 
 
         
       
@@ -714,6 +698,24 @@ def main():
          for buildings in buildinglst:
                buildings.draw(screen)
                buildings.update()
+
+        if len(enemylst) > 0:
+         for enemy in enemylst:
+            
+            fullenemies = [item for item in allymilitary]
+            fullenemies.append(home)
+            enemy.shoot(pygame.time,projectilelst,fullenemies,time)
+            enemy.go(gameClock,buildinglst)
+            enemy.walk(pygame.time)
+            
+            enemy.draw(screen)
+            
+            
+            if enemy.isDead():
+                #rint("remving")
+                enemylst.remove(enemy)
+                 
+
         if len(flamelst) > 0:
            for fire in flamelst:
               fire.draw(screen)
@@ -863,6 +865,8 @@ def main():
 
                               leftclicklst.append((newcitizen.getPosition().x,newcitizen.getPosition().y))
                               leftindex +=1
+                              leftclick.position = (newcitizen.getPosition().x,newcitizen.getPosition().y)
+                              
                               newcitizen.beginmoving(list((home.getPosition().x+randomx,home.getPosition().x+randomy)))
                               citizenlst.append(newcitizen)
                               gold -= costregister["citizen"][1]
@@ -1216,7 +1220,7 @@ def main():
       buttonls = [quit,restart]
       while win:
       
-         screen.fill((255,255,255))
+         screen.fill((255,0,255))
          screen.blit(victoryimage.image,list((0,0)))
       
 

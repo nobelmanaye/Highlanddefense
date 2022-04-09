@@ -11,7 +11,7 @@ class drawable(object):
    Implements the Orb object
    '''
 
-   def __init__(self,path,xposition,yposition):
+   def __init__(self,path,xposition,yposition,animation=None):
       '''
       initializes the Orb oject
       '''
@@ -26,6 +26,8 @@ class drawable(object):
       self.position.y = yposition
       self.selimage = self.image
       self.imageres = self.image
+      self.animation = animation
+      self.starttime = 1
      
       #generate starting conditions for the orb(including random desired speeds, velocity & position vecs)
       
@@ -95,4 +97,38 @@ class drawable(object):
       modified = oldrect.inflate(-0.3,-0.3)
       newRect =  self.position + modified 
       return newRect
+   def changetime(self,time):
+      '''
+      Resets the time cursor used for animation
+      '''
+      self.starttime = time
+   def wave(self,clock,maxframe,framerate):
+
+      frame = framerate
+
+      time = clock.get_ticks()/1000
+      if (time -self.starttime > 0.7):
+
+               # Update time every 2.1 ish seconds
+               
+               self.changetime(time)
+            
+                       
+               if self.cursor >7*frame:
+                  # If the animation frame is greater than seven (only seven walking animation frames) then reset the cursor
+                  self.cursor = 1
+               # change animation frame as per the animation cursor
+              
+                 
+                  
+
+               if self.cursor <=7*frame:
+                  #Move the Animatioon framecursor as long as it is below the frame amount
+                  self.cursor +=1
+               if self.cursor >7*frame:
+                  self.cursor = 1
+               if self.cursor in(5*frame,frame):
+                  
+                  self.cursor += (round(frame/1.5))
+              
 

@@ -221,7 +221,7 @@ class Character(drawable):
                         #self.velocity.y = self.maxspeed
                         colliding = False
                   
-                  print("This is diff " + str((xdiff,ydiff)))
+                  #print("This is diff " + str((xdiff,ydiff)))
                   adjustedspeed = self.calculatepath(possdirections,xdiff,ydiff)
                   #rint("========DIST: "+ str(round(Distance(start,end)-self.tolerance)))
                   if Distance(start,end)-self.tolerance > 36:
@@ -383,18 +383,18 @@ class Character(drawable):
                  
           if xdiff < 0 and "right" in paths:
              self.pathstate = ""
-             print("right1")
+             #print("right1")
              self.lastspeed = "right"
              return speeddict["right"]
              
           if xdiff > 0 and "left" in paths:
              self.pathstate = ""
-             print("left1")
+             #print("left1")
              self.lastspeed = "left"
              return speeddict["left"]
              
           if ydiff <self.ysensormin and "down" in paths:
-             print("down1")
+             #print("down1")
              self.lastspeed = "down"
              return speeddict["down"]
 
@@ -409,24 +409,24 @@ class Character(drawable):
           if ydiff < 0 and "down" in paths:
              self.pathstate = ""
              self.lastspeed = "down"
-             print("down2")
+             #print("down2")
              return speeddict["down"]
              
           if ydiff > 0 and "up" in paths:
              self.pathstate = ""
              self.lastspeed = "up"
-             print("up2")
+             #print("up2")
              return speeddict["up"]
              
           if xdiff <=0 and "left" in paths:
              self.lastspeed = "left"
-             print("left2")
+             #print("left2")
              return speeddict["left"]
 
           elif xdiff >=0 and "right" in paths:
              self.lastspeed = "right"
              
-             print("right2")
+             #print("right2")
              return speeddict["right"]
       
 
@@ -453,7 +453,7 @@ class Character(drawable):
 
                 for string in paths:
                    pats += (" ,"+string)
-                print(" This is speed1 "  + priority[index] + " " + pats)
+                #print(" This is speed1 "  + priority[index] + " " + pats)
                 
                 if Character.isopposite(self.lastspeed,priority[index]):
                    return speeddict[self.lastspeed]
@@ -473,7 +473,7 @@ class Character(drawable):
              if priority[index] in paths:
                 for string in paths:
                    pats += (" ,"+string)
-                print(" This is speed2 "  + priority[index] + " " + pats)
+                #" This is speed2 "  + priority[index] + " " + pats)
                 if Character.isopposite(self.lastspeed,priority[index]):
                    return speeddict[self.lastspeed]
                 else:
@@ -488,7 +488,7 @@ class Character(drawable):
              if priority[index] in paths:
                 for string in paths:
                    pats += (" ,"+string)
-                print(" This is speed3 "  + priority[index] + " " + pats)
+                #print(" This is speed3 "  + priority[index] + " " + pats)
                 if Character.isopposite(self.lastspeed,priority[index]):
                    return speeddict[self.lastspeed]
                 else:
@@ -510,10 +510,10 @@ class Character(drawable):
                 
                 
                 if Character.isopposite(self.lastspeed,priority[index]):
-                   print(" This is mod speed4 "  + self.lastpos + " " + pats)
+                   #print(" This is mod speed4 "  + self.lastpos + " " + pats)
                    return speeddict[self.lastspeed]
                 else:
-                  print(" This is speed4 "  + priority[index] + " " + pats)
+                  #print(" This is speed4 "  + priority[index] + " " + pats)
                   self.lastspeed = priority[index]
                   return speeddict[priority[index]]
              index += 1

@@ -1,6 +1,7 @@
 
 
 from doctest import register_optionflag
+from sqlite3 import SQLITE_CREATE_INDEX
 
 
 from Check import check
@@ -41,7 +42,7 @@ def main():
    
    pygame.display.set_caption("The Uncivil Defense")
    
-   costregister = {"rifleman":[0,30], "citizen":[0,5], "barracks":[40,0],"tower":[50,0],"pikeman":[10,5],"cavalry":[0,80],"cannon":[100,300]}
+   costregister = {"rifleman":[0,30], "citizen":[0,5], "barracks":[40,0],"tower":[50,0],"pikeman":[10,5],"cavalry":[0,60],"cannon":[100,200]}
    screen = pygame.display.set_mode(list(SCREEN_SIZE),pygame.FULLSCREEN)
 
    hurt = pygame.mixer.Sound(os.path.join("sound","hurt1.wav"))
@@ -73,6 +74,9 @@ def main():
    tutorial1path = os.path.join("images\Menu", "tutorial1.png")
    quitpath = os.path.join("images\Menu", "quit.png")
    quit1path = os.path.join("images\Menu", "quit1.png")
+   restartpath= os.path.join("images\Menu", "restart.png")
+   losepath = os.path.join("images\Menu", "losepath.png")
+   victorypath  = os.path.join("images\Menu", "victorypath.png")
 
    selectedbuttons = [easy1path,medium1path,hard1path,tutorial1path,quit1path]
    unselectedbuttons =[easypath,mediumpath,hardpath,tutorialpath,quitpath]
@@ -83,14 +87,25 @@ def main():
 
 
    panelpath = os.path.join("images", "panel.png")
-   buttonpath = os.path.join("images", "citizenbutton.png")
+   rightpanelpath = os.path.join("images", "rightpanel.png")
+   buttonpath = os.path.join("images\Buttons", "civilianbutton.png")
    barrackbuttonpath =os.path.join("images\Buttons", "barracksbutton.png")
-   towerbuttonpath = os.path.join("images\Buttons", "barracksbutton.png")
+   towerbuttonpath = os.path.join("images\Buttons", "towerbutton.png")
    riflemanbuttonpath = os.path.join("images\Buttons", "riflemanbutton.png")
-   cannonbuttonpath = os.path.join("images\Buttons", "riflemanbutton.png")
-   cavalrybuttonpath = os.path.join("images\Buttons", "riflemanbutton.png")
-   pikemanbuttonpath = os.path.join("images\Buttons", "riflemanbutton.png")
-   
+   cannonbuttonpath = os.path.join("images\Buttons", "cannonbutton.png")
+   cavalrybuttonpath = os.path.join("images\Buttons", "cavalrybutton.png")
+   pikemanbuttonpath = os.path.join("images\Buttons", "pikemanbutton.png")
+   timerpath = os.path.join("images", "timer.png")
+
+   goldingotpath =  os.path.join("images", "goldingot.png")
+   woodingotpath = os.path.join("images", "woodingot.png")
+   flag1path = os.path.join("images", "flag1.png")
+   flag2path = os.path.join("images", "flag2.png")
+   flagpolepath = os.path.join("images", "pole1.png")
+   flamepath = os.path.join("images", "flame1.png")
+
+
+
 
    # ENEMIES
    riflepath = os.path.join("images\Rifleman\Red\Walking","180walking1.png")
@@ -121,7 +136,11 @@ def main():
    
    home = building(homeselectedpath,homeselectpathdir,homepath,homepathdir,520,300)
    home.HP =500
+   pole = drawable(flagpolepath,home.position.x+60,home.position.y)
+   flag1 = drawable(flag1path,home.position.x+74,pole.position.y)
+   flag2 = drawable(flag2path,home.position.x+74,home.position.y+pole.getHeight())
   
+   
    barrackselected ="barrackselected"
 
 
@@ -156,13 +175,14 @@ def main():
    unbuiltlst = []
    allymilitary= []
    selectedcitizenlst = []
+   flamelst = []
 
    projectilelst = []
 
    Allbuildings = [buildinglst,[home],resourcelst]
 
 
-   leftclicklst = [(480,300),(6,622)]
+   leftclicklst = [(590,250),(6,622)]
    rightclicklst =[(-400,-400)]
 
    leftindex = 0
@@ -189,7 +209,7 @@ def main():
    for i in range(10):
       
       randy = random.randint(-90,120)
-      randx = i*45
+      randx = i*60
       grandx = 350 + i*45
       grandy = 400+random.randint(-90,120)
       goldminespot = [(-28+grandx,-1+grandy), (9+grandx,-1+grandy),(25+grandx,-1+grandy)]
@@ -204,7 +224,7 @@ def main():
    toberemoved = []
 
 
-   print("this is removed " + str(toberemoved))
+   
    for index in toberemoved:
       resourcelst[index] = 'r'
 
@@ -230,8 +250,11 @@ def main():
    # tree = resource(treepath,400,100,[(45,70)])
 
 
-   leftpanel = panel(panelpath,None,0,770)
-   rightpanel = panel(panelpath,None,800,770)
+   leftpanel = panel(panelpath,None,0,700)
+   rightpanel = panel(rightpanelpath,None,830,700)
+   timepanel = drawable(timerpath,470,686)
+
+
 
    easylst = [540,100]
    easy = drawable(easypath,easylst[0],easylst[1])
@@ -239,6 +262,9 @@ def main():
    hard = drawable(hardpath,easylst[0]-17,easylst[1]+300)
    tutorial = drawable(tutorialpath,easylst[0]-17,easylst[1]+470)
    quit = drawable(quitpath,easylst[0]+400,easylst[1]+590)
+   restart = drawable(restartpath,600,700 )
+   loseimage = drawable(losepath,0,0)
+   victoryimage = drawable(victorypath,0,0)
 
    buttonlst = [easy,medium,hard,tutorial,quit]
    mode1 = Mode("easy")
@@ -253,14 +279,15 @@ def main():
    conditionlst = [mode1,mode2,mode3,mode4,mode5]
    quill = drawable(quillpath,0,0)
    
-   button = panel(buttonpath,citizenpath,0,770)
-   barrackbutton =  panel(barrackbuttonpath,barrackbuttonpath,0,770)
-   towerbutton =  panel(towerbuttonpath,towerbuttonpath,90,770)
+   button = panel(buttonpath,citizenpath,0,745)
+   barrackbutton =  panel(barrackbuttonpath,barrackbuttonpath,0,745)
+   towerbutton =  panel(towerbuttonpath,towerbuttonpath,170,745)
    
-   riflemanbutton = panel(riflemanbuttonpath,riflemanbuttonpath,0,770)
-   cannonbutton = panel(riflemanbuttonpath,riflemanbuttonpath,90,770)
-   cavalrybutton = panel(riflemanbuttonpath,riflemanbuttonpath,0,770)
-   pikemanbutton = panel(riflemanbuttonpath,riflemanbuttonpath,90,770)
+   riflemanbutton = panel(riflemanbuttonpath,riflemanbuttonpath,0,745)
+  
+   cannonbutton = panel(cannonbuttonpath,cannonbuttonpath,170,745)
+   cavalrybutton = panel(cavalrybuttonpath,cavalrybuttonpath,0,745)
+   pikemanbutton = panel(pikemanbuttonpath,pikemanbuttonpath,170,745)
    
 
    touched = False
@@ -355,7 +382,7 @@ def main():
    win = False
    lose = False
 
-   cannonlimit = 30
+   cannonlimit = 15
    scale = 1
    gold = 100
    Wood = 100
@@ -376,16 +403,20 @@ def main():
       scale = 3
       interval = 45
       winminute = 8
-      rate = 3
+      rate = 6
    if mode == "hard":
       interval = 30
       winminute =10
-      rate = 4
+      rate = 8
+   else:
+      winminute = 3.3
 
 
    
    gold*=scale
    Wood*= scale
+   goldingot = drawable(goldingotpath,950,785)
+   woodingot = drawable(woodingotpath,1180,785)
 
    register.gold = gold
    register.wood = Wood
@@ -395,13 +426,34 @@ def main():
 
    gamestart = int(pygame.time.get_ticks()/1000)
    oldtime = gamestart
-   grade= 1
+   grade= 3
+   flagrate = pole.getHeight()/home.HP
+
+   
 
    while RUNNING and mode != "quit":
 
       #Tutorial
         screen.fill((255,255,255))
         time = int(pygame.time.get_ticks()/1000)
+
+        ychange = home.HP*flagrate
+
+        
+
+        
+
+         
+       
+
+       
+        
+        flag1.position.y = pole.position.y -ychange+93
+        flag2.position.y = home.position.y+pole.getHeight()+ychange-93
+
+
+
+        
         if finished:
            leftclick.position = (-400,-400)
            rightclick.position = (-400,-400)
@@ -428,6 +480,7 @@ def main():
         if abs((time-gamestart))>wintime:
            win = True
            RUNNING = False
+           main()
 
         
 
@@ -453,6 +506,9 @@ def main():
             grade += rate
            cannonlimit -= rate
 
+           temp = cannonlimit
+           cannonlimit  = round(max(1,cannonlimit))
+
            randposx = random.randint(50,80)
            randposy = random.randint(50,80)
 
@@ -460,13 +516,13 @@ def main():
            
            played = False
            
-           cannondie = random.randint(1,cannonlimit)
+           cannondie = random.randint(1,max(2,cannonlimit))
            direction = 0
            
 
            if direction  == 0:
-              xchange = 40
-              ychange = 25
+              xchange = 0
+              ychange = 31
               randposx = random.randint(20,58)
               randposy = random.randint(93,180)
 
@@ -476,22 +532,22 @@ def main():
            for i in range (numenemies):
                   
                   
-                  riflesold = Rifleman(riflepath,randposx-30,randposy+i*(17))
-                  spearman = Pikeman("Red",randposx+10,randposy+i*(17))
+                  riflesold = Rifleman(riflepath,randposx-30,randposy+i*(ychange))
+                  spearman = Pikeman("Red",randposx+10,randposy+i*(ychange))
                   if 2 == random.randint(1,max(2,cannonlimit)):
-                     artillery = cannon("Red",randposx-5+i*(xchange),randposy+i*(ychange))
-                     artillery.beginmoving((260+i*(round(xchange), 350+i*(round(ychange)))))
+                     artillery = cannon("Red",randposx-5,randposy+i*(ychange))
+                     artillery.beginmoving((260+i*(round(xchange)), 350+i*round(ychange)))
                      
 
                      enemylst.append(artillery)
                      cav = cavalry("Red",randposx+20+i*(xchange),randposy+i*(ychange))
-                     cav.beginmoving((280+i*(round(xchange)), 330+i*(round(ychange/2))))
+                     cav.beginmoving((280+i*(round(xchange)), 330+i*(round(ychange/0.8))))
                      enemylst.append(cav)
 
                   riflesold.quickshootfix("Red")
-                  riflesold.beginmoving((280+ i*(round(xchange))-10*(round(xchange/10)), 430+ i*(round(ychange/10))))
+                  riflesold.beginmoving((280, 430+ i*(ychange)))
 
-                  spearman.beginmoving((280+ i*(round(xchange)), 400+ i*(round(ychange*1.2))))
+                  spearman.beginmoving((280+ i*(round(xchange)), 400+ i*ychange))
 
 
                   enemylst.append(riflesold)
@@ -524,18 +580,22 @@ def main():
         leftclick.draw(screen)
         rightclick.draw(screen)
         rightpanel.draw(screen)
+        timepanel.draw(screen)
         #register.draw(screen)
         
-        text = pygame.font.SysFont("Arial",16)
+        text = pygame.font.SysFont("Arial",23)
 
         
-        goldtxt = text.render( (  str(round(gold))),False,(0,0,0) )
+        goldtxt = text.render( (  str(round(gold))),False,(0,0,0))
 
-        Woodtxt = text.render( (str(round(Wood))),False,(0,0,0) )
-        
-        screen.blit(goldtxt,(894,800))
+        Woodtxt = text.render( (str(round(Wood))),False,(0,0,0))
+                
+        screen.blit(goldtxt,(1044,799))
 
-        screen.blit(Woodtxt,(980,800))
+        screen.blit(Woodtxt,(1278,804))
+
+        goldingot.draw(screen)
+        woodingot.draw(screen)
 
         if displaynotenough:
            if abs(time-notenoughtime)< 5:
@@ -543,30 +603,31 @@ def main():
 
 
 
-        HPfont =  pygame.font.SysFont("Arial",32)
-        homehp = HPfont.render( (" Castle Hitpoints :" + str(home.HP)),False,(0,0,0) )
+        HPfont =  pygame.font.SysFont("Arial",22)
+        homehp = HPfont.render( str((wintime-time)) + "  Seconds",False,(0,0,0) )
         
-        screen.blit(homehp,(470,800))
+        screen.blit(homehp,(610,820))
         button.draw(screen,home.isselected())
 
         if home.isDead():
            RUNNING = False
            lose = True
-        if len(enemylst) > 0:
-         for enemy in enemylst:
+           main()
+      #   if len(enemylst) > 0:
+      #    for enemy in enemylst:
             
-            fullenemies = [item for item in allymilitary]
-            fullenemies.append(home)
-            enemy.shoot(pygame.time,projectilelst,fullenemies,time)
-            enemy.go(gameClock,buildinglst)
-            enemy.walk(pygame.time)
+      #       fullenemies = [item for item in allymilitary]
+      #       fullenemies.append(home)
+      #       enemy.shoot(pygame.time,projectilelst,fullenemies,time)
+      #       enemy.go(gameClock,buildinglst)
+      #       enemy.walk(pygame.time)
             
-            enemy.draw(screen)
+      #       enemy.draw(screen)
             
             
-            if enemy.isDead():
-                #rint("remving")
-                enemylst.remove(enemy)
+      #       if enemy.isDead():
+      #           #rint("remving")
+      #           enemylst.remove(enemy)
             
            
         if len(buildinglst) >0:
@@ -582,10 +643,43 @@ def main():
               buildings.changecolliderect((0.5,0.5))
             
               #buildings.drawcollide(screen)
+        if home.HP < 500 and home.HP%50 == 0:
+           randx = random.randint(home.position.x+30,home.position.x+home.getWidth()-20)
+           randy = random.randint(home.position.y+30,home.position.y+home.getHeight()-20)
+           flame = drawable(flamepath,randx,randy)
+           home.HP -=1
+           flamelst.append(flame)
+
+
+        if len(enemylst) > 0:
+         for enemy in enemylst:
+            
+            fullenemies = [item for item in allymilitary]
+            fullenemies.append(home)
+            enemy.shoot(pygame.time,projectilelst,fullenemies,time)
+            enemy.go(gameClock,buildinglst)
+            enemy.walk(pygame.time)
+            
+            enemy.draw(screen)
+            
+            
+            if enemy.isDead():
+                #rint("remving")
+                enemylst.remove(enemy)
                  
 
+        
+      
+        
+        riflemanbutton.image.set_colorkey(riflemanbutton.image.get_at((0,0)))
+      
         riflemanbutton.draw(screen,isbarrackselected)
+
+
+
         pikemanbutton.draw(screen,isbarrackselected)
+        pikemanbutton.image.set_colorkey(riflemanbutton.image.get_at((0,0)))
+        
 
         cavalrybutton.draw(screen,istowerselected)
         cannonbutton.draw(screen,istowerselected)
@@ -601,7 +695,9 @@ def main():
         #barrack.draw(screen)
         selectedexists = False
         
-        
+        pole.draw(screen)
+        flag1.draw(screen)
+        flag2.draw(screen)
         if len(unbuiltlst)>=1:
          for buildings in unbuiltlst:
                
@@ -618,6 +714,9 @@ def main():
          for buildings in buildinglst:
                buildings.draw(screen)
                buildings.update()
+        if len(flamelst) > 0:
+           for fire in flamelst:
+              fire.draw(screen)
         
         if len(allymilitary)>=1:
            #rint(citizenlst)
@@ -681,6 +780,8 @@ def main():
         #home.draw(screen)
 
         pygame.display.flip()
+
+        
 
         
            
@@ -751,6 +852,7 @@ def main():
                      if cursor.getCollisionRect().colliderect(button.getCollisionRect()):
                         if home.isselected():
 
+
                            newcitizen = home.spawn("citizen",register)
 
                            newcitizen =Citizen(home.position.x-10, home.position.y-10)
@@ -759,7 +861,7 @@ def main():
                               randomx = random.randint(-80,-39)
                               randomy= random.randint(-170,-110)
 
-                              leftclicklst.append(tuple((home.getPosition().x+randomx-leftclick.getWidth()+80,home.getPosition().x+randomy-leftclick.getHeight())))
+                              leftclicklst.append((newcitizen.getPosition().x,newcitizen.getPosition().y))
                               leftindex +=1
                               newcitizen.beginmoving(list((home.getPosition().x+randomx,home.getPosition().x+randomy)))
                               citizenlst.append(newcitizen)
@@ -932,6 +1034,9 @@ def main():
                            if cursor.occupied ==False:
                               buildings.select()
                               cursor.occupied = True
+                              if buildinglst.index(buildings) == 0:
+                                 leftclicklst.append((50,630))
+                                 leftindex+=1
                      
                      if cursor.getCollisionRect().colliderect(home.getCollisionRect()):
                         if cursor.occupied ==False:
@@ -1093,7 +1198,8 @@ def main():
                                  selectedcitizen.remove(selectedcitizen[len(selectedcitizen)-1])
                         
                               
-                    
+   
+
 
               
                 
@@ -1104,16 +1210,102 @@ def main():
         gameClock.tick(60)
         ticks = gameClock.get_time() / 1000
    
+   
    if win == True:
-      print("You Won!!")
-      main()
+      #winsound.play()
+      buttonls = [quit,restart]
+      while win:
+      
+         screen.fill((255,255,255))
+         screen.blit(victoryimage.image,list((0,0)))
+      
+
+         quit.image.set_colorkey(quit.image.get_at((0,0)))
+         quit.draw(screen)
+
+         restart.image.set_colorkey(restart.image.get_at((0,0)))
+         restart.draw(screen)
+         mousepos = pygame.mouse.get_pos()
+
+         quill.position.x = mousepos[0]
+         quill.position.y = mousepos[1]-quill.getHeight()
+         quill.draw(screen)
+
+
+         
+
+         for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+
+               if event.button == 1:
+
+                  for buttons in buttonls:
+
+
+                     if quit.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
+                        win ==False
+                        #winsound.stop()
+                        main()
+                     elif restart.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
+                        win = False
+                        #winsound.stop()
+                        main()
+
+      
+      
 
 
 
    elif lose == True:
-      print("You LOST!!")
 
+      #losesound.play()
+      buttonls = [quit,restart]
+      while lose:
       
+         screen.fill((255,255,255))
+         screen.blit(loseimage.image,list((0,0)))
+      
+
+         quit.image.set_colorkey(quit.image.get_at((0,0)))
+         quit.draw(screen)
+
+         restart.image.set_colorkey(restart.image.get_at((0,0)))
+         restart.draw(screen)
+         mousepos = pygame.mouse.get_pos()
+
+         quill.position.x = mousepos[0]
+         quill.position.y = mousepos[1]-quill.getHeight()
+         quill.draw(screen)
+
+
+         
+
+         for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+
+               if event.button == 1:
+
+                  for buttons in buttonls:
+
+
+                     if quit.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
+                        lose ==False
+                        #losesound.stop()
+                     elif restart.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
+                        lose == False
+                        #losesound.stop()
+                        main()
+
+
+                        
+                        
+         
+
+         
 
 
 

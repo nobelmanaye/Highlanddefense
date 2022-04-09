@@ -9,7 +9,7 @@ from projectile import Projectile
 import math
 
 
-Bonus = {"Pikeman":-10, "Rifleman":-10,"Building":-70,"Cavalry":-90,"Cannon":0}
+Bonus = {"Pikeman":-10, "Rifleman":-10,"Building":-30,"Cavalry":-190,"Cannon":0}
 class cannon(Character):
     def __init__(self,color,xposition,yposition):
         if color =="Green":
@@ -28,8 +28,8 @@ class cannon(Character):
         self.imageres = self.image
         self.walkimage = self.image
         self.shootimage = self.image
-        self.attack = 100
-        self.HP = 1000
+        self.attack = 80
+        self.HP = 130
         self.type = "Cannon"
         self.frame = 2
 
@@ -205,7 +205,7 @@ class cannon(Character):
                if self.shootcursor == 14*frame:
                   pygame.mixer.set_num_channels(100)
                   if direction =="90":
-                     bullet = Projectile(self.position.x+0.4*self.getWidth(),self.position.y+2,400,int(direction),enemylst)
+                     bullet = Projectile(self.position.x+135,self.position.y+31,400,int(direction),enemylst)
 
                   if direction =="180":
                      bullet = Projectile(self.position.x+86,self.position.y+89,400,int(direction),enemylst)
@@ -216,7 +216,10 @@ class cannon(Character):
                   
                      bullet = Projectile(self.position.x-10,self.position.y+10,400,int(direction),enemylst)
                   bullet.changetocannon()
+                  bullet.attack = self.attack
                   bullet.attack += Bonus[target.type]
+                  if target.type =="Building":
+                     bullet.attack = 30
                   projectilelst.append(bullet)
                   channel = pygame.mixer.find_channel()
                   #rint("AM I empty"  + str(channel ==None))

@@ -46,8 +46,8 @@ class Citizen(Character):
       self.keepdistance = 10
       #generate starting conditions for the orb(including random desired speeds, velocity & position vecs)
       self.chopimage = None
-      self.miningrate = 0.01
-      self.choppingrate = 0.01
+      self.miningrate = 0.07
+      self.choppingrate = 0.07
       self.buildrate = 3
       self.mining = False
       self.building = False

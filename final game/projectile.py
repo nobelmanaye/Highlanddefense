@@ -53,7 +53,7 @@ class Projectile(drawable):
     
     def changetocannon(self):
         self.image = pygame.image.load(os.path.join("images\Projectiles","cannonball.png"))
-        self.attack = 90
+        self.attack = 40
         self.shell = True
         self.range = 360
         

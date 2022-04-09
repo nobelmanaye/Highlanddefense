@@ -28,6 +28,7 @@ class building(object):
       self.type = "Building"
       self.inflate = None
       
+      
       self.velocity = Vector2(0,0)
       self.position = Vector2(0,0)
       self.position.x = xposition

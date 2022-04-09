@@ -61,23 +61,25 @@ class panel(object):
       Returns the height of the orb
       '''
       return self.image.get_height()
-   def draw(self,surface, prereq = True):
+   def draw(self,surface, prereq = True,selected =False):
       '''
        Draws the orb
       '''
+      self.image.set_colorkey(self.image.get_at((0,0)))
       
       
       if self.dead == False and prereq ==True:
 
          
          
-         self.image.set_colorkey(self.image.get_at((0,0)))
+         #self.image.set_colorkey(self.image.get_at((0,0)))
          surface.blit(self.image, list(self.position))
 
-         if self.secondimage is not None:
-             self.image.set_colorkey(self.secondimage.get_at((0,0)))
+         if selected and self.secondimage is not None:
+             #self.image.set_colorkey(self.secondimage.get_at((0,0)))
              
              surface.blit(self.secondimage, list(self.position))
+         
              
              
 

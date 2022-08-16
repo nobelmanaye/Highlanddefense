@@ -35,7 +35,7 @@ def main():
    pygame.init()
    pygame.mixer.pre_init()
    pygame.mixer.init()
-   pygame.mixer.set_num_channels(100)
+   pygame.mixer.set_num_channels(1000)
    # load and set the logo
    
    
@@ -43,9 +43,13 @@ def main():
    pygame.display.set_caption("The Uncivil Defense")
    
    costregister = {"rifleman":[0,30], "citizen":[0,5], "barracks":[40,0],"tower":[50,0],"pikeman":[10,5],"cavalry":[0,60],"cannon":[100,200]}
-   screen = pygame.display.set_mode(list(SCREEN_SIZE),pygame.FULLSCREEN)
+   #screen = pygame.display.set_mode(list(SCREEN_SIZE),pygame.FULLSCREEN) SET TO FULL SCREEN
+   screen = pygame.display.set_mode(list(SCREEN_SIZE))
 
-   hurt = pygame.mixer.Sound(os.path.join("sound","hurt1.wav"))
+   hurt3 = pygame.mixer.Sound(os.path.join("sound","hurt3.wav"))
+   hurt4 = pygame.mixer.Sound(os.path.join("sound","hurt4.wav"))
+   
+   hurtlst=[hurt4,hurt3]
    siren = pygame.mixer.Sound(os.path.join("sound","siren.wav"))
    # Let's make a background so we can see if we're moving
    background = pygame.image.load(os.path.join("images", "grass6.jpg")).convert()
@@ -713,7 +717,10 @@ def main():
             
             if enemy.isDead():
                 #rint("remving")
-                enemylst.remove(enemy)
+                 
+                 deathsound = hurtlst[random.randint(0,len(hurtlst)-1)]
+                 deathsound.play()
+                 enemylst.remove(enemy)
                  
 
         if len(flamelst) > 0:
@@ -729,6 +736,8 @@ def main():
               
               soldier.draw(screen)
               if soldier.dead == True:
+                 deathsound = hurtlst[random.randint(0,len(hurtlst)-1)]
+                 deathsound.play()
                  allymilitary.remove(soldier)
               
         for bullet in projectilelst:

@@ -33,6 +33,7 @@ class Rifleman(Character):
         self.shootcursor = 1
         self.cocksound = pygame.mixer.Sound(os.path.join("sound","cocking.wav"))
         self.shootsound = pygame.mixer.Sound(os.path.join("sound","rifleshooting.wav"))
+   
         self.type = "Rifleman"
         
 
@@ -51,6 +52,7 @@ class Rifleman(Character):
 
        self.cocksound = pygame.mixer.Sound(os.path.join("sound","cocking.wav"))
        self.shootsound = pygame.mixer.Sound(os.path.join("sound","rifleshooting.wav"))
+       self.shootsound2 = pygame.mixer.Sound(os.path.join("sound","rifleshooting2.wav"))
 
        self.direction = "0"
        self.enemy = None
@@ -186,7 +188,7 @@ class Rifleman(Character):
        self.target = target
        self.shooting = True
 
-    def shoot(self,clock,projectilelst,enemylst,framerate = 5):
+    def shoot(self,clock,projectilelst,enemylst,framerate = 7):
       ''''
       Walks the citizen as per the requested frame rate      
       '''
@@ -304,6 +306,12 @@ class Rifleman(Character):
             if self.shootcursor >14*frame:
                      self.shootcursor = 1
 
+            if self.shootcursor ==8*frame:
+               delayed = random.randint(0,4)
+               if delayed==0:
+                  delay = random.randint(1,round(frame/2))
+                  self.shootcursor-= delay
+
             if self.shootcursor == 10*frame:
                      bullet = Projectile(self.position.x-10,self.position.y+10,400,int(direction),enemylst)
 
@@ -312,7 +320,16 @@ class Rifleman(Character):
                      channel = pygame.mixer.find_channel()
                      if channel is not None and channel.get_busy() != True:
                         channel.set_volume(0.4)
-                        channel.play(self.shootsound)
+                        
+                        delay = random.randint(1,2)
+
+                        if delay ==1:
+                           channel.set_volume(0.2)
+                           channel.play(self.shootsound)
+                        else:
+                           channel.play(self.shootsound2)
+            
+
 
             if self.shootcursor == 2*frame:
                      

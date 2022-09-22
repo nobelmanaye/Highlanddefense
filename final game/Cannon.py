@@ -216,8 +216,8 @@ class cannon(Character):
                   
                      bullet = Projectile(self.position.x-10,self.position.y+10,400,int(direction),enemylst)
                   bullet.changetocannon()
-                  bullet.attack = self.attack
-                  bullet.attack += Bonus[target.type]
+                  bullet.attack = self.attack + Bonus[target.type]
+                  
                   if target.type =="Building":
                      bullet.attack = 30
                   projectilelst.append(bullet)

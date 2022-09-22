@@ -71,8 +71,10 @@ class Projectile(drawable):
 
         for enemy in self.enemies:
             if self.getCollisionRect().colliderect(enemy.getCollisionRect()):
-                enemy.recvDamage(self.attack)
-                if not self.shell:
+                if enemy.type=="Building":
+                    print("Recieving damage " + enemy.type  + " "+ str(self.attack))
+                    enemy.recvDamage(self.attack)
+                
                     self.dead = True
     def die(self):
         self.dead = True

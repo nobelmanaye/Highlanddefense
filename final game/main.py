@@ -43,7 +43,7 @@ def main():
    pygame.display.set_caption("The Uncivil Defense")
    
    costregister = {"rifleman":[0,30], "citizen":[0,5], "barracks":[40,0],"tower":[50,0],"pikeman":[10,5],"cavalry":[0,60],"cannon":[100,200]}
-   #screen = pygame.display.set_mode(list(SCREEN_SIZE),pygame.FULLSCREEN) SET TO FULL SCREEN
+   #screen = pygame.display.set_mode(list(SCREEN_SIZE),pygame.FULLSCREEN) #SET TO FULL SCREEN
    screen = pygame.display.set_mode(list(SCREEN_SIZE))
 
    hurt3 = pygame.mixer.Sound(os.path.join("sound","hurt3.wav"))
@@ -139,7 +139,7 @@ def main():
    towerselected = "towerselected"
    
    home = building(homeselectedpath,homeselectpathdir,homepath,homepathdir,520,300)
-   home.HP =500
+   home.ishome = True
    pole = drawable(flagpolepath,home.position.x+60,home.position.y)
    flag1 = drawable(flag1path,home.position.x+74,pole.position.y)
    flag2 = drawable(flag2path,home.position.x+74,home.position.y+pole.getHeight())
@@ -538,7 +538,7 @@ def main():
                   
                   riflesold = Rifleman(riflepath,randposx-30,randposy+i*(ychange))
                   spearman = Pikeman("Red",randposx+10,randposy+i*(ychange))
-                  if 2 == 1:
+                  if random.randint(1,5) == 1:
                      artillery = cannon("Red",randposx-5,randposy+i*(ychange))
                      artillery.beginmoving((260+i*(round(xchange)), 350+i*round(ychange)))
                      
@@ -718,7 +718,9 @@ def main():
             if enemy.isDead():
                 #rint("remving")
                  
+
                  deathsound = hurtlst[random.randint(0,len(hurtlst)-1)]
+                 deathsound.set_volume(0.09)
                  deathsound.play()
                  enemylst.remove(enemy)
                  
@@ -737,6 +739,7 @@ def main():
               soldier.draw(screen)
               if soldier.dead == True:
                  deathsound = hurtlst[random.randint(0,len(hurtlst)-1)]
+                 deathsound.set_volume(0.09)
                  deathsound.play()
                  allymilitary.remove(soldier)
               

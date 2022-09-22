@@ -66,7 +66,7 @@ class resource(drawable):
        
        
    def markandgogather(self,miner):
-      print(" this is self.spots" + str(self.spots))
+      #rint(" this is self.spots" + str(self.spots))
       markeditem =0
       copygatherer =self.gathererlst.copy()
       #print("This is self.spots" + str(self.spots))

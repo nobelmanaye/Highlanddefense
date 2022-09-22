@@ -319,14 +319,16 @@ class Rifleman(Character):
                      projectilelst.append(bullet)
                      channel = pygame.mixer.find_channel()
                      if channel is not None and channel.get_busy() != True:
-                        channel.set_volume(0.4)
+                        channel.set_volume(0.7)
                         
                         delay = random.randint(1,2)
 
                         if delay ==1:
                            channel.set_volume(0.2)
+                           
                            channel.play(self.shootsound)
                         else:
+                           self.shootsound.set_volume(0.05)
                            channel.play(self.shootsound2)
             
 

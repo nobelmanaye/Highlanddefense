@@ -53,7 +53,7 @@ class Projectile(drawable):
     
     def changetocannon(self):
         self.image = pygame.image.load(os.path.join("images\Projectiles","cannonball.png"))
-        self.attack = 40
+        
         self.shell = True
         self.range = 360
         
@@ -74,7 +74,7 @@ class Projectile(drawable):
                 if enemy.type=="Building":
                     print("Recieving damage " + enemy.type  + " "+ str(self.attack))
                     enemy.recvDamage(self.attack)
-                
+            
                     self.dead = True
     def die(self):
         self.dead = True

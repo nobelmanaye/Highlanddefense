@@ -29,6 +29,7 @@ class building(object):
       self.inflate = None
       
       
+      
       self.velocity = Vector2(0,0)
       self.position = Vector2(0,0)
       self.position.x = xposition
@@ -76,6 +77,7 @@ class building(object):
       
       
       self.homecollide = panel(self.homecollidepath,self.homecollidepath,0,0)
+      self.isHome = False
 
    def setflagpos(self,flagx,flagy):
        self.flagx = flagx

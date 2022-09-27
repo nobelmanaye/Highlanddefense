@@ -9,7 +9,7 @@ from projectile import Projectile
 import math
 
 
-Bonus = {"Pikeman":-10, "Rifleman":-10,"Building":-30,"Cavalry":-190,"Cannon":0}
+Bonus = {"Pikeman":-10, "Rifleman":-10,"Building":-30,"Cavalry":-30,"Cannon":-4}
 class cannon(Character):
     def __init__(self,color,xposition,yposition):
         if color =="Green":
@@ -28,7 +28,7 @@ class cannon(Character):
         self.imageres = self.image
         self.walkimage = self.image
         self.shootimage = self.image
-        self.attack = 80
+        self.attack = 40
         self.HP = 130
         self.type = "Cannon"
         self.frame = 2
@@ -218,8 +218,8 @@ class cannon(Character):
                   bullet.changetocannon()
                   bullet.attack = self.attack + Bonus[target.type]
                   
-                  if target.type =="Building":
-                     bullet.attack = 30
+
+
                   projectilelst.append(bullet)
                   channel = pygame.mixer.find_channel()
                   #rint("AM I empty"  + str(channel ==None))
@@ -230,6 +230,7 @@ class cannon(Character):
                         #rint(" THis is busy " + str(channel.get_busy()))
                         channel.set_volume(0.8)
                         channel.play(self.shootsound)
+
                   
                      
 

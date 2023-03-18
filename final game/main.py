@@ -24,6 +24,7 @@ from rifleman import Rifleman
 from Cavalry import cavalry
 from Cannon import cannon
 from dummy import Dummy
+from paths import*
 
 
 SCREEN_SIZE = (1440,900)
@@ -57,68 +58,24 @@ def main():
 
 
    collide = pygame.image.load(os.path.join("images", "citizencollisionrect.png")).convert()
+
    leftclickpath =os.path.join("images\Tutorial", "leftclick.png")
    rightclickpath = os.path.join("images\Tutorial", "rightclick.png")
    notenoughim = os.path.join("images","Notenough.png")
+
+
+
+
+
    leftclick = panel(leftclickpath,leftclickpath,800,400)
    rightclick = panel(rightclickpath,rightclickpath,300,400)
    notenough = panel(notenoughim,notenoughim,874,308)
-   mouse1 =os.path.join("images", "mouse.png")
-   goldpath = os.path.join("images", "gold.png")
-   treepath = os.path.join("images","tree.png")
-
-   #BUTTONS
-   easypath = os.path.join("images\Menu", "easy.png")
-   easy1path = os.path.join("images\Menu", "easy1.png")
-   mediumpath = os.path.join("images\Menu", "medium.png")
-   medium1path = os.path.join("images\Menu", "medium1.png")
-   hardpath = os.path.join("images\Menu", "hard.png")
-   hard1path = os.path.join("images\Menu", "hard1.png")
-   tutorialpath = os.path.join("images\Menu", "tutorial.png")
-   tutorial1path = os.path.join("images\Menu", "tutorial1.png")
-   quitpath = os.path.join("images\Menu", "quit.png")
-   quit1path = os.path.join("images\Menu", "quit1.png")
-   restartpath= os.path.join("images\Menu", "restart.png")
-   losepath = os.path.join("images\Menu", "losepath.png")
-   victorypath  = os.path.join("images\Menu", "victorypath.png")
 
    selectedbuttons = [easy1path,medium1path,hard1path,tutorial1path,quit1path]
    unselectedbuttons =[easypath,mediumpath,hardpath,tutorialpath,quitpath]
 
 
-   quillpath = os.path.join("images\Menu","quill.png")
 
-
-
-   panelpath = os.path.join("images", "panel.png")
-   rightpanelpath = os.path.join("images", "rightpanel.png")
-   buttonpath = os.path.join("images\Buttons", "civilianbutton.png")
-   barrackbuttonpath =os.path.join("images\Buttons", "barracksbutton.png")
-   towerbuttonpath = os.path.join("images\Buttons", "towerbutton.png")
-   riflemanbuttonpath = os.path.join("images\Buttons", "riflemanbutton.png")
-   cannonbuttonpath = os.path.join("images\Buttons", "cannonbutton.png")
-   cavalrybuttonpath = os.path.join("images\Buttons", "cavalrybutton.png")
-   pikemanbuttonpath = os.path.join("images\Buttons", "pikemanbutton.png")
-   timerpath = os.path.join("images", "timer.png")
-
-   goldingotpath =  os.path.join("images", "goldingot.png")
-   woodingotpath = os.path.join("images", "woodingot.png")
-   flag1path = os.path.join("images", "flag1.png")
-   flag2path = os.path.join("images", "flag2.png")
-   flagpolepath = os.path.join("images", "pole1.png")
-   flamepath = os.path.join("images", "flame1.png")
-
-
-
-
-   # ENEMIES
-   riflepath = os.path.join("images\Rifleman\Red\Walking","180walking1.png")
-
-   
-
-
-
-   citizenpath = os.path.join("images", "citizen3.png")
    alliedriflepath = os.path.join("images\Rifleman\Walking","180walking1.png")
    #dummypath = os.path.join("images\pikeman", "0walking1.png")
    dummypath = os.path.join("images\Enemies\dummy", "dummy.png")
@@ -147,28 +104,8 @@ def main():
    
    barrackselected ="barrackselected"
 
-
-   
-
-   count = 0
-   #testbarrack = drawable(os.path.join("images\Buildings", "barracks" + str(count) + ".png"),800,400)
-
-
-   position = Vector2(0,0)
-   velocity = Vector2(0,0)
-   offset = Vector2(0,0)
-   #path = os.path.join("images", "sphere1.png")
-
    cursor = mouse(mouse1)
-   point = panel(mouse1,mouse1,0,0)
-   uppoint = panel(mouse1,mouse1,0,0)
-   downpoint = panel(mouse1,mouse1,0,0)
-   rightpoint = panel(mouse1,mouse1,0,0)
-   leftpoint = panel(mouse1,mouse1,0,0)
-  
 
-   # artillery = cannon("Red",400,100)
-   # spearman = Pikeman("Red",300,100)
    allymilitary =[Pikeman("Red",random.randint(200,300),100) for x in range(10)]
 
    resourcelst= []
@@ -199,12 +136,9 @@ def main():
    #Tick the clock
    gameClock = pygame.time.Clock()
    homepos = list(home.getPosition())
-   # define a variable to control the main loop
-   
 
    timer = 0
-   
-   
+
    goldpos = [600,100]
 
    treeminespot = [45,70]
@@ -235,23 +169,6 @@ def main():
    for item in resourcelst:
       if item =='r':
          resourcelst.remove(item)
-   
-      
-
-
-   
-
-      
-
-      
-
-      
-
-   
-
-   #man = citizen(100,100)
-   # goldmine = resource(goldpath,600,100,goldminespot)
-   # tree = resource(treepath,400,100,[(45,70)])
 
 
    leftpanel = panel(panelpath,None,0,700)
@@ -295,9 +212,6 @@ def main():
    
 
    touched = False
-
-   
-   #barrack = building(barrackselectedpath,barrackpathlst[0],800,390)
    board = graphmap(SCREEN_SIZE)
    register = resourceregister()
    register.addGold(500)
@@ -375,13 +289,6 @@ def main():
       
       pygame.display.flip()
 
-
-         
-      
-      
-      
-
-
    RUNNING = True
    win = False
    lose = False
@@ -443,15 +350,7 @@ def main():
 
         ychange = home.HP*flagrate
 
-        
 
-        
-
-         
-       
-
-       
-        
         flag1.position.y = pole.position.y -ychange+93
         flag2.position.y = home.position.y+pole.getHeight()+ychange-93
 
@@ -614,25 +513,13 @@ def main():
         button.draw(screen,home.isselected())
 
         if home.isDead():
-           RUNNING = False
            lose = True
+
            main()
-      #   if len(enemylst) > 0:
-      #    for enemy in enemylst:
-            
-      #       fullenemies = [item for item in allymilitary]
-      #       fullenemies.append(home)
-      #       enemy.shoot(pygame.time,projectilelst,fullenemies,time)
-      #       enemy.go(gameClock,buildinglst)
-      #       enemy.walk(pygame.time)
-            
-      #       enemy.draw(screen)
-            
-            
-      #       if enemy.isDead():
-      #           #rint("remving")
-      #           enemylst.remove(enemy)
-            
+           RUNNING = False
+           
+           
+ 
            
         if len(buildinglst) >0:
            for buildings in buildinglst:
@@ -1103,17 +990,12 @@ def main():
 
                                  cursor.occupied = True
 
-                     # for soldier in allymilitary:
-                     #    if cursor.getCollisionRect().colliderect(soldier.getCollisionRect()):
-                     #             #mouse is selecting the human
-                     #             if cursor.occupied == False:
-                     #                soldier.select()
-                     #                #selectedcitizen.append(man)
-                     #                soldier.shooting ==False
-                     #                cursor.occupied = True
 
 
-                        
+
+
+                 # LEFT CLICK TRIGGERS
+                 #     
                  if event.button ==3:
 
                     #***************right click methods
@@ -1227,7 +1109,13 @@ def main():
         ticks = gameClock.get_time() / 1000
    
    
+   
+   print("win  ", win, "lose ", lose)
+
    if win == True:
+
+
+      print("hereeee ====")
       #winsound.play()
       buttonls = [quit,restart]
       while win:

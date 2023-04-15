@@ -25,6 +25,7 @@ from Cavalry import cavalry
 from Cannon import cannon
 from dummy import Dummy
 from paths import*
+from Gameinit import*
 
 
 SCREEN_SIZE = (1440,900)
@@ -249,56 +250,10 @@ def main(cond=None):
 
 
       easyimage = pygame.image.load(easypath)
-      while Menu:
 
 
-         screen.fill((255,255,255))
-         screen.blit(scroll,list((0,0)))
-         
-         
-         for buttons in buttonlst:
-            buttons.image.set_colorkey(buttons.image.get_at((0,0)))
-         
-
-            buttons.draw(screen)
-         mousepos = pygame.mouse.get_pos()
-
-         quill.position.x = mousepos[0]
-         quill.position.y = mousepos[1]-quill.getHeight()
-         quill.draw(screen)
-
-         #pygame.draw.rect(screen,(0,0,255),easy.getCollisionRect())  
-         for buttons in buttonlst:
-            if buttons.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
-               buttons.image = pygame.image.load(selectedbuttons[buttonlst.index(buttons)])
-               
-
-               
-            else:
-               buttons.image = pygame.image.load(unselectedbuttons[buttonlst.index(buttons)])
-
-         
-
-         for event in pygame.event.get():
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-
-
-               if event.button == 1:
-
-                  for buttons in buttonlst:
-
-
-                     if buttons.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
-
-
-                        Menu = False
-                        mode = conditionlst[buttonlst.index(buttons)].getMode()
-                        
-         
-         
-         pygame.display.flip()
-
+      menuinterface(screen,buttonlst,quill,unselectedbuttons,conditionlst)
+      
       RUNNING = True
       win = False
       lose = False
@@ -308,29 +263,9 @@ def main(cond=None):
       gold = 100
       Wood = 100
    
+      finished, interval,winminute,rate = modecalc(mode)
       interval =30
-      if mode =="tutorial":
-         finished = False
-         interval =60
-         winminute = 3.3
-         rate = 0.2
-      if mode =="easy":
-         scale =5
-         interval = 50
-         winminute = 5
-         rate = 2
-
-      if mode =="medium":
-         scale = 3
-         interval = 45
-         winminute = 8
-         rate = 6
-      if mode == "hard":
-         interval = 30
-         winminute =10
-         rate = 8
-      else:
-         winminute = 3.3
+ 
 
 
       

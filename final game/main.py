@@ -26,6 +26,7 @@ from Cannon import cannon
 from dummy import Dummy
 from paths import*
 from Gameinit import*
+from Victory import *
 
 
 SCREEN_SIZE = (1440,900)
@@ -251,8 +252,58 @@ def main(cond=None):
 
       easyimage = pygame.image.load(easypath)
 
+        
+      while Menu:
 
-      menuinterface(screen,buttonlst,quill,unselectedbuttons,conditionlst)
+
+         screen.fill((255,255,255))
+         screen.blit(scroll,list((0,0)))
+
+
+         for buttons in buttonlst:
+            buttons.image.set_colorkey(buttons.image.get_at((0,0)))
+
+
+            buttons.draw(screen)
+         mousepos = pygame.mouse.get_pos()
+
+         quill.position.x = mousepos[0]
+         quill.position.y = mousepos[1]-quill.getHeight()
+         quill.draw(screen)
+
+         #pygame.draw.rect(screen,(0,0,255),easy.getCollisionRect())  
+         for buttons in buttonlst:
+            if buttons.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
+               buttons.image = pygame.image.load(selectedbuttons[buttonlst.index(buttons)])
+
+
+
+            else:
+               buttons.image = pygame.image.load(unselectedbuttons[buttonlst.index(buttons)])
+
+
+
+         for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+
+               if event.button == 1:
+
+                  for buttons in buttonlst:
+
+
+                     if buttons.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
+
+
+                        Menu = False
+                        mode = conditionlst[buttonlst.index(buttons)].getMode()
+
+
+
+         pygame.display.flip()
+
+      #menuinterface(screen,buttonlst,quill,unselectedbuttons,conditionlst)
       
       RUNNING = True
       win = False
@@ -458,9 +509,7 @@ def main(cond=None):
          button.draw(screen,home.isselected())
 
          if home.isDead():
-            lose = True
-
-            main("lose")
+            Win()
             RUNNING = False
             
             
@@ -1074,8 +1123,8 @@ def main(cond=None):
          quit.image.set_colorkey(quit.image.get_at((0,0)))
          quit.draw(screen)
 
-         restart.image.set_colorkey(restart.image.get_at((0,0)))
-         restart.draw(screen)
+         #restart.image.set_colorkey(restart.image.get_at((0,0)))
+         #restart.draw(screen)
          mousepos = pygame.mouse.get_pos()
 
          quill.position.x = mousepos[0]

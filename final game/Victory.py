@@ -6,12 +6,15 @@ from drawable import drawable
 from paths import*
 
 SCREEN_SIZE = (1440,900)
-def Win():
+#0 is win, 1 is lose
+def Win(cond):
+
+   print("this is cond " + str(cond))
    
    # initialize the pygame module
    pygame.init()
 
-
+   backgroundls = [victorypath,losepath]
    # load and set the logo
    
    pygame.display.set_caption("Camera")
@@ -29,8 +32,12 @@ def Win():
   # Orb.draw()
 
    winsound = pygame.mixer.Sound(os.path.join("sound","winsound.wav"))
+   losesound = pygame.mixer.Sound(os.path.join("sound","losesound.wav"))
+   soundls = [winsound,losesound]
+   quit = drawable(quitpath,1161,733)
+
       
-   victoryimage = drawable(victorypath,0,0)
+   victoryimage = drawable(backgroundls[cond],0,0)
    quill = drawable(quillpath,0,0)
    #Tick the clock
    gameClock = pygame.time.Clock()
@@ -39,9 +46,13 @@ def Win():
    RUNNING = True
 
    touched = False
+
+
+   selectedbuttons = [easy1path,medium1path,hard1path,tutorial1path,quit1path]
+   unselectedbuttons =[easypath,mediumpath,hardpath,tutorialpath,quitpath]
    # main loop
 
-   winsound.play()
+   soundls[cond].play()
    while RUNNING:
 
      
@@ -51,10 +62,12 @@ def Win():
       #Orb.update(WORLD_SIZE,gameClock)
       
       mousepos = pygame.mouse.get_pos()
+      
 
       quill.position.x = mousepos[0]
       quill.position.y = mousepos[1]-quill.getHeight()
       quill.draw(screen)
+      quit.draw(screen)
       # Flip the display to the monitor
       pygame.display.flip()
       
@@ -64,10 +77,30 @@ def Win():
       for event in pygame.event.get():
             # only do something if the event is of type QUIT or ESCAPE is pressed
 
-            rand = random.randint(0,1)
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-               # change the value to False, to exit the main loop
-               RUNNING = False
+         rand = random.randint(0,1)
+
+
+         if quit.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
+            quit.image = pygame.image.load(quit1path)
+            quit.image.set_colorkey(quit.image.get_at((0,0)))
+         else:
+               quit.image= pygame.image.load(quitpath)
+               quit.image.set_colorkey(quit.image.get_at((0,0)))
+
+
+                  
+         if event.type == pygame.MOUSEBUTTONDOWN:
+
+
+            if event.button == 1:
+               print(str((mousepos[0],mousepos[1])))
+
+
+               if quit.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):
+                     RUNNING = False
+         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            # change the value to False, to exit the main loop
+            RUNNING = False
                
 
       # Update time and position
@@ -92,6 +125,10 @@ def Win():
   
       
    pygame.quit()
+
+
+
+   
    
    
 if __name__ == "__main__":

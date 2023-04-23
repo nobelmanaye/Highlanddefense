@@ -509,7 +509,7 @@ def main(cond=None):
          button.draw(screen,home.isselected())
 
          if home.isDead():
-            Win()
+            Win(1)
             RUNNING = False
             
             
@@ -1106,6 +1106,7 @@ def main(cond=None):
       
       print("win  ", win, "lose ", lose)
 
+   Win(0)
    if cond == "w":
 
 

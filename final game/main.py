@@ -1,33 +1,35 @@
 
+#Internal Game functionalities 
+from System.Check import check
+from System.Gamemanager import Mode
+from System.Gameinit import*
+from System.ResourceRegister import resourceregister
+from System.paths import*
+from System.Victory import *
 
-from doctest import register_optionflag
-from sqlite3 import SQLITE_CREATE_INDEX
-
-
-from Check import check
+#Python modules
 import pygame
 import os
 import random
-from pikeman import Pikeman
-from Gamemanager import Mode
-from vector2D import Vector2
-from citizen import Citizen
-from resource import resource
-from Queue import queue
-from mouse import mouse
-from Building import building
-from Panel import panel
-from drawable import drawable
-from ResourceRegister import resourceregister
-from testgraph import astar, graphmap
-from rifleman import Rifleman
-from Cavalry import cavalry
-from Cannon import cannon
-from dummy import Dummy
-from paths import*
-from Gameinit import*
-from Victory import *
 
+# Not moving units
+from Props.resources import resource
+from Props.mouse import mouse
+from Props.Building import building
+from Props.Panel import panel
+
+# moving units
+from Actors.pikeman import Pikeman
+from Actors.citizen import Citizen
+from Physics.drawable import drawable 
+from Actors.rifleman import Rifleman
+from Actors.Cavalry import cavalry
+from Actors.Cannon import cannon
+
+
+
+
+# CHANGE SCREEN RESOLUTION HERE 
 
 SCREEN_SIZE = (1440,900)
 
@@ -224,11 +226,11 @@ def main(cond=None):
       
 
       touched = False
-      board = graphmap(SCREEN_SIZE)
+      #board = graphmap(SCREEN_SIZE) #Future implementations of Astar algo
       register = resourceregister()
       register.addGold(500)
       register.addWood(120)
-      blitorder = queue()
+   
       Checker = check()
       
       
@@ -655,10 +657,6 @@ def main(cond=None):
          
          
          
-
-         for citizen in citizenlst:
-            if citizen not in blitorder.orderlst:
-               blitorder.adding(citizen)
 
 
 

@@ -6,18 +6,15 @@ from System.Gameinit import*
 from System.ResourceRegister import resourceregister
 from System.paths import*
 from System.Victory import *
-
 #Python modules
 import pygame
 import os
 import random
-
 # Not moving units
 from Props.resources import resource
 from Props.mouse import mouse
 from Props.Building import building
 from Props.Panel import panel
-
 # moving units
 from Actors.pikeman import Pikeman
 from Actors.citizen import Citizen
@@ -26,96 +23,101 @@ from Actors.rifleman import Rifleman
 from Actors.Cavalry import cavalry
 from Actors.Cannon import cannon
 
-
-
-
 # CHANGE SCREEN RESOLUTION HERE 
 
 SCREEN_SIZE = (1440,900)
 
 
 def main(cond=None):
+   '''Runs the game '''
 
-
-
-   
-   
-      # initialize the pygame module
+   #Initialize methods
    pygame.init()
    pygame.mixer.pre_init()
    pygame.mixer.init()
-   pygame.mixer.set_num_channels(1000)
-   # load and set the logo
-   
-   
-   
+   pygame.mixer.set_num_channels(1000)       # more channels to avoid audio crowding
    pygame.display.set_caption("The Uncivil Defense")
    
-   costregister = {"rifleman":[0,30], "citizen":[0,5], "barracks":[40,0],"tower":[50,0],"pikeman":[10,5],"cavalry":[0,60],"cannon":[100,200]}
+  
+   #########################################
+   #FULL SCREEN MODE. Uncomment to make full screen 
    #screen = pygame.display.set_mode(list(SCREEN_SIZE),pygame.FULLSCREEN) #SET TO FULL SCREEN
+   #########################################
    screen = pygame.display.set_mode(list(SCREEN_SIZE))
-
-   hurt3 = pygame.mixer.Sound(os.path.join("sound","hurt3.wav"))
-   hurt4 = pygame.mixer.Sound(os.path.join("sound","hurt4.wav"))
-   
-   hurtlst=[hurt4,hurt3]
-   siren = pygame.mixer.Sound(os.path.join("sound","siren.wav"))
-   # Let's make a background so we can see if we're moving
    background = pygame.image.load(os.path.join("images", "grass6.jpg")).convert()
-   scroll = pygame.image.load(os.path.join("images\Menu", "menu1.png")).convert()
-
-
-   collide = pygame.image.load(os.path.join("images", "citizencollisionrect.png")).convert()
-
-   leftclickpath =os.path.join("images\Tutorial", "leftclick.png")
-   rightclickpath = os.path.join("images\Tutorial", "rightclick.png")
-   notenoughim = os.path.join("images","Notenough.png")
-
-
-
-
-
-   leftclick = panel(leftclickpath,leftclickpath,800,400)
-   rightclick = panel(rightclickpath,rightclickpath,300,400)
-   notenough = panel(notenoughim,notenoughim,874,308)
-
-   selectedbuttons = [easy1path,medium1path,hard1path,tutorial1path,quit1path]
-   unselectedbuttons =[easypath,mediumpath,hardpath,tutorialpath,quitpath]
-
-
-
-   alliedriflepath = os.path.join("images\Rifleman\Walking","180walking1.png")
-   #dummypath = os.path.join("images\pikeman", "0walking1.png")
-   dummypath = os.path.join("images\Enemies\dummy", "dummy.png")
-   #dummy2path = os.path.join(
-
+   #home paths
    homepath =  "testbuilding"
    homepathdir = "images"
    homeselectedpath = "testbuildingse"
    homeselectpathdir = "images"
-
+   #barrack paths
    barrackdir= "images\Buildings"
    barrackpath = "barracks"
+   barrackselected ="barrackselected"
+   #barrack images
    barrackcollide = pygame.image.load(os.path.join("images", "citizencollisionrect.png")).convert()
-
+   
+   #Tower paths
    towerdir = barrackdir
    towerpath = "tower"
    towercollide = barrackcollide
    towerselected = "towerselected"
+
+   #Tutorial Paths
+   leftclickpath =os.path.join("images\Tutorial", "leftclick.png")
+   rightclickpath = os.path.join("images\Tutorial", "rightclick.png")
+   notenoughim = os.path.join("images","Notenough.png")
+   #Tutorial Objects
+   leftclick = panel(leftclickpath,leftclickpath,800,400)
+   rightclick = panel(rightclickpath,rightclickpath,300,400)
+   #Tutorial mouse starting position
+   leftclicklst = [(590,250),(6,622)]
+   rightclicklst =[(-400,-400)]
+
+
    
+   #Game warning sounds
+   hurt3 = pygame.mixer.Sound(os.path.join("sound","hurt3.wav"))
+   hurt4 = pygame.mixer.Sound(os.path.join("sound","hurt4.wav"))
+   hurtlst=[hurt4,hurt3]
+   siren = pygame.mixer.Sound(os.path.join("sound","siren.wav"))
+
+   #Menu initializaion
+   selectedbuttons = [easy1path,medium1path,hard1path,tutorial1path,quit1path]
+   unselectedbuttons =[easypath,mediumpath,hardpath,tutorialpath,quitpath]
+   easylst = [540,100]
+   scroll = pygame.image.load(os.path.join("images\Menu", "menu1.png")).convert()
+   easy = drawable(easypath,easylst[0],easylst[1])
+   medium = drawable(mediumpath,easylst[0]+10,easylst[1]+160)
+   hard = drawable(hardpath,easylst[0]-17,easylst[1]+300)
+   tutorial = drawable(tutorialpath,easylst[0]-17,easylst[1]+470)
+   quit = drawable(quitpath,easylst[0]+400,easylst[1]+590)
+   restart = drawable(restartpath,600,700 )
+   loseimage = drawable(losepath,0,0)
+   victoryimage = drawable(victorypath,0,0)
+   
+   
+
+
+   #home classes
    home = building(homeselectedpath,homeselectpathdir,homepath,homepathdir,520,300)
    home.ishome = True
    pole = drawable(flagpolepath,home.position.x+60,home.position.y)
    flag1 = drawable(flag1path,home.position.x+74,pole.position.y)
    flag2 = drawable(flag2path,home.position.x+74,home.position.y+pole.getHeight())
 
+   notenough = panel(notenoughim,notenoughim,874,308)
    
-   barrackselected ="barrackselected"
+   
 
    cursor = mouse(mouse1)
-
+   #+==================================================
+   # INITIALIZE GAME COST AND ENEMY
+   # Cost: [wood, gold]
    allymilitary =[Pikeman("Red",random.randint(200,300),100) for x in range(10)]
-
+   costregister = {"rifleman":[0,30], "citizen":[0,5], "barracks":[40,0],"tower":[50,0],"pikeman":[10,5],"cavalry":[0,60],"cannon":[100,200]}
+   #======================================================
+   #Unit counter intialization
    resourcelst= []
    citizenlst = []
    selectedcitizen= []
@@ -125,43 +127,23 @@ def main(cond=None):
    allymilitary= []
    selectedcitizenlst = []
    flamelst = []
-
    projectilelst = []
 
    Allbuildings = [buildinglst,[home],resourcelst]
 
-
-   leftclicklst = [(590,250),(6,622)]
-   rightclicklst =[(-400,-400)]
 
    leftindex = 0
    rightindex = 0
 
    enemylst = []
    
-   homepos = list(home.getPosition())
+
 
    #Tick the clock
    gameClock = pygame.time.Clock()
-   homepos = list(home.getPosition())
+  
+   #Menu path
 
-   timer = 0
-
-   goldpos = [600,100]
-
-   treeminespot = [45,70]
-   treepos = [400,100]
-
-
-   easylst = [540,100]
-   easy = drawable(easypath,easylst[0],easylst[1])
-   medium = drawable(mediumpath,easylst[0]+10,easylst[1]+160)
-   hard = drawable(hardpath,easylst[0]-17,easylst[1]+300)
-   tutorial = drawable(tutorialpath,easylst[0]-17,easylst[1]+470)
-   quit = drawable(quitpath,easylst[0]+400,easylst[1]+590)
-   restart = drawable(restartpath,600,700 )
-   loseimage = drawable(losepath,0,0)
-   victoryimage = drawable(victorypath,0,0)
 
    if cond ==None:
 

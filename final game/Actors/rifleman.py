@@ -3,7 +3,6 @@ from doctest import ELLIPSIS_MARKER
 import pygame
 import os
 import math
-import random
 from Physics.vector2D import Vector2
 from Physics.physics import Distance,rad
 from Physics.projectile import Projectile
@@ -13,6 +12,7 @@ from Props.Panel import panel
 from Actors.character import Character
 
 from Physics.drawable import drawable
+import secrets
 
 Bonus = {"Cannon":10, "Pikeman":13,"Building":-8,"Cavalry":5,"Rifleman":10}
 class Rifleman(Character):
@@ -307,9 +307,9 @@ class Rifleman(Character):
                      self.shootcursor = 1
 
             if self.shootcursor ==8*frame:
-               delayed = random.randint(0,4)
+               delayed = secrets.SystemRandom().randint(0,4)
                if delayed==0:
-                  delay = random.randint(1,round(frame/2))
+                  delay = secrets.SystemRandom().randint(1,round(frame/2))
                   self.shootcursor-= delay
 
             if self.shootcursor == 10*frame:
@@ -321,7 +321,7 @@ class Rifleman(Character):
                      if channel is not None and channel.get_busy() != True:
                         channel.set_volume(0.7)
                         
-                        delay = random.randint(1,2)
+                        delay = secrets.SystemRandom().randint(1,2)
 
                         if delay ==1:
                            channel.set_volume(0.2)
@@ -338,7 +338,7 @@ class Rifleman(Character):
                      channel = pygame.mixer.find_channel()
                      
                      
-                     delay = random.randint(1,3)
+                     delay = secrets.SystemRandom().randint(1,3)
                      if channel is not None and channel.get_busy() != True and delay ==2:
                         channel.set_volume(0.2)
                         channel.play(self.cocksound)
@@ -346,7 +346,7 @@ class Rifleman(Character):
                   
             if self.cursor in(5*frame,6*frame,7*frame):
                      
-                      delay = random.randint(1,5)
+                      delay = secrets.SystemRandom().randint(1,5)
                       if delay == 4:
 
                         self.cursor -= round(0.75*frame)

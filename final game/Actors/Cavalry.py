@@ -3,12 +3,12 @@ from doctest import ELLIPSIS_MARKER
 import pygame
 import os
 import math
-import random
 
 from Physics.physics import Distance
 from Props.Panel import panel
 from Physics.drawable import drawable
 from Actors.character import Character
+import secrets
 
 Bonus = {"Cannon":-10, "Rifleman":-8,"Building":-38,"Pikeman":-20,"Cavalry":0}
 
@@ -187,7 +187,7 @@ class cavalry(Character):
                   if channel is not None:
                         
                         channel.set_volume(0.5)
-                        choice = random.randint(0,1)
+                        choice = secrets.SystemRandom().randint(0,1)
                         if choice:
                             channel.play(self.sword1)
                         else:

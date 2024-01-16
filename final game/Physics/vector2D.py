@@ -16,9 +16,8 @@ class Vector2(object):
 
    def normalize(self):
       """Calculates normal and modifies in-place."""
-      distance = self.magnitude()
       
-      if distance:
+      if distance := self.magnitude():
           self.x /= distance
           self.y /= distance
           
@@ -27,9 +26,8 @@ class Vector2(object):
 
    def normalized(self):
       """Returns normalized Vector2, does not modify in-place."""
-      distance = self.magnitude()
       
-      if distance:
+      if distance := self.magnitude():
          return Vector2(self.x / distance, self.y / distance)
 
       return Vector2(*self)

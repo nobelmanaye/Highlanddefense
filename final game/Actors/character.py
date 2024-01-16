@@ -314,8 +314,7 @@ class Character(drawable):
        else:
           return 0
     def getAnglestate(self):
-       angle = self.getAngle()
-       if angle is None:
+       if (angle := self.getAngle()) is None:
           angle = 0
        
        newangle = abs(angle)

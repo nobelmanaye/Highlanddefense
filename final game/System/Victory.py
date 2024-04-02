@@ -1,9 +1,10 @@
 
 import pygame
 import os
-import random
 from Physics.drawable import drawable
 from System.paths import*
+import secrets
+
 victorypath  = os.path.join("images\Menu", "victorypath.png")
 losepath = os.path.join("images\Menu", "losepath.png")
 
@@ -79,7 +80,7 @@ def Win(cond):
       for event in pygame.event.get():
             # only do something if the event is of type QUIT or ESCAPE is pressed
 
-         rand = random.randint(0,1)
+         rand = secrets.SystemRandom().randint(0,1)
 
 
          if quit.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):

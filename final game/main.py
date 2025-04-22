@@ -9,7 +9,6 @@ from System.Victory import *
 #Python modules
 import pygame
 import os
-import random
 # Not moving units
 from Props.resources import resource
 from Props.mouse import mouse
@@ -22,6 +21,7 @@ from Physics.drawable import drawable
 from Actors.rifleman import Rifleman
 from Actors.Cavalry import cavalry
 from Actors.Cannon import cannon
+import secrets
 
 # CHANGE SCREEN RESOLUTION HERE 
 
@@ -114,7 +114,7 @@ def main(cond=None):
    #+==================================================
    # INITIALIZE GAME COST AND ENEMY
    # Cost: [wood, gold]
-   allymilitary =[Pikeman("Red",random.randint(200,300),100) for x in range(10)]
+   allymilitary =[Pikeman("Red",secrets.SystemRandom().randint(200,300),100) for x in range(10)]
    costregister = {"rifleman":[0,30], "citizen":[0,5], "barracks":[40,0],"tower":[50,0],"pikeman":[10,5],"cavalry":[0,60],"cannon":[100,200]}
    #======================================================
    #Unit counter intialization
@@ -149,10 +149,10 @@ def main(cond=None):
 
       for i in range(10):
          
-         randy = random.randint(-90,120)
+         randy = secrets.SystemRandom().randint(-90,120)
          randx = i*60
          grandx = 350 + i*45
-         grandy = 400+random.randint(-90,120)
+         grandy = 400+secrets.SystemRandom().randint(-90,120)
          goldminespot = [(-28+grandx,-1+grandy), (9+grandx,-1+grandy),(25+grandx,-1+grandy)]
          goldmine = resource(goldpath,600+grandx,100+grandy,goldminespot,"mine")
          tree = resource(treepath,400+randx,100+randy,[(30+randx,70+randy)],"tree")
@@ -385,29 +385,29 @@ def main(cond=None):
             #print(" This is time " + str(time) +" This is diff " + str(oldtime-time) + " THis is grade " + str(grade) + ' rate ' + str(rate))
          #if (time)%36 ==0 and time != 0 and time != oldtime:
             oldtime = time
-            if 1 == random.randint(0,3):
+            if 1 == secrets.SystemRandom().randint(0,3):
                grade += rate
             cannonlimit -= rate
 
             temp = cannonlimit
             cannonlimit  = round(max(1,cannonlimit))
 
-            randposx = random.randint(50,80)
-            randposy = random.randint(50,80)
+            randposx = secrets.SystemRandom().randint(50,80)
+            randposy = secrets.SystemRandom().randint(50,80)
 
-            numenemies = random.randint(1,round(grade))
+            numenemies = secrets.SystemRandom().randint(1,round(grade))
             
             played = False
             
-            cannondie = random.randint(1,max(2,cannonlimit))
+            cannondie = secrets.SystemRandom().randint(1,max(2,cannonlimit))
             direction = 0
             
 
             if direction  == 0:
                xchange = 0
                ychange = 31
-               randposx = random.randint(20,58)
-               randposy = random.randint(93,180)
+               randposx = secrets.SystemRandom().randint(20,58)
+               randposy = secrets.SystemRandom().randint(93,180)
 
    
                
@@ -417,7 +417,7 @@ def main(cond=None):
                      
                      riflesold = Rifleman(riflepath,randposx-30,randposy+i*(ychange))
                      spearman = Pikeman("Red",randposx+10,randposy+i*(ychange))
-                     if random.randint(1,5) == 1:
+                     if secrets.SystemRandom().randint(1,5) == 1:
                         artillery = cannon("Red",randposx-5,randposy+i*(ychange))
                         artillery.beginmoving((260+i*(round(xchange)), 350+i*round(ychange)))
                         
@@ -513,8 +513,8 @@ def main(cond=None):
                
                #buildings.drawcollide(screen)
          if home.HP < 500 and home.HP%50 == 0:
-            randx = random.randint(home.position.x+30,home.position.x+home.getWidth()-20)
-            randy = random.randint(home.position.y+30,home.position.y+home.getHeight()-20)
+            randx = secrets.SystemRandom().randint(home.position.x+30,home.position.x+home.getWidth()-20)
+            randy = secrets.SystemRandom().randint(home.position.y+30,home.position.y+home.getHeight()-20)
             flame = drawable(flamepath,randx,randy)
             home.HP -=1
             flamelst.append(flame)
@@ -584,7 +584,7 @@ def main(cond=None):
                   #rint("remving")
                   
 
-                  deathsound = hurtlst[random.randint(0,len(hurtlst)-1)]
+                  deathsound = hurtlst[secrets.SystemRandom().randint(0,len(hurtlst)-1)]
                   deathsound.set_volume(0.09)
                   deathsound.play()
                   enemylst.remove(enemy)
@@ -603,7 +603,7 @@ def main(cond=None):
                
                soldier.draw(screen)
                if soldier.dead == True:
-                  deathsound = hurtlst[random.randint(0,len(hurtlst)-1)]
+                  deathsound = hurtlst[secrets.SystemRandom().randint(0,len(hurtlst)-1)]
                   deathsound.set_volume(0.09)
                   deathsound.play()
                   allymilitary.remove(soldier)
@@ -665,7 +665,7 @@ def main(cond=None):
          
          for event in pygame.event.get():
             
-               rand = random.randint(0,1)
+               rand = secrets.SystemRandom().randint(0,1)
 
                #   if event.type == pygame.KEYDOWN:
                #       #tutorial = pygame.image.load(os.path.join("images", "axe1.png")).convert()
@@ -733,8 +733,8 @@ def main(cond=None):
                               newcitizen =Citizen(home.position.x-10, home.position.y-10)
 
                               if (gold -costregister["citizen"][1]) > 0:
-                                 randomx = random.randint(-80,-39)
-                                 randomy= random.randint(-170,-110)
+                                 randomx = secrets.SystemRandom().randint(-80,-39)
+                                 randomy= secrets.SystemRandom().randint(-170,-110)
 
                                  leftclicklst.append((newcitizen.getPosition().x,newcitizen.getPosition().y))
                                  leftindex +=1
@@ -785,8 +785,8 @@ def main(cond=None):
                                     riflesoldier.quickshootfix("Green")
                                     gold -= costregister["rifleman"][1]
                                     
-                                    randomx = random.randint(100,220)
-                                    randomy= random.randint(100,220)
+                                    randomx = secrets.SystemRandom().randint(100,220)
+                                    randomy= secrets.SystemRandom().randint(100,220)
                                     riflesoldier.beginmoving([randomx+buildings.getPosition().x,randomy + buildings.getPosition().y])
                                     allymilitary.append(riflesoldier)
                                     pass#rint("++++++++++NO++++++++++++++++++")
@@ -816,8 +816,8 @@ def main(cond=None):
                                     gold += -1*costregister["pikeman"][1]
                                     Wood += -1*costregister["pikeman"][0]
 
-                                    randomx = random.randint(100,220)
-                                    randomy= random.randint(100,220)
+                                    randomx = secrets.SystemRandom().randint(100,220)
+                                    randomy= secrets.SystemRandom().randint(100,220)
                                     spearman.beginmoving([randomx+buildings.getPosition().x,randomy + buildings.getPosition().y])
                            
                                     allymilitary.append(spearman)
@@ -846,8 +846,8 @@ def main(cond=None):
 
                                     
 
-                                    randomx = random.randint(100,220)
-                                    randomy= random.randint(100,220)
+                                    randomx = secrets.SystemRandom().randint(100,220)
+                                    randomy= secrets.SystemRandom().randint(100,220)
                                     cav.beginmoving([randomx+buildings.getPosition().x,randomy + buildings.getPosition().y])
                                     gold += -1*costregister["cavalry"][1]
                                     allymilitary.append(cav)
@@ -868,8 +868,8 @@ def main(cond=None):
                                     # register.addGold(-1*costregister["pikeman"][1])
                                     # register.addWood(-1*costregister["pikeman"][0])
 
-                                    randomx = random.randint(100,220)
-                                    randomy= random.randint(100,220)
+                                    randomx = secrets.SystemRandom().randint(100,220)
+                                    randomy= secrets.SystemRandom().randint(100,220)
 
                                     
                                     bombard.beginmoving([randomx+buildings.getPosition().x,randomy + buildings.getPosition().y])

@@ -10,6 +10,8 @@ from System.Victory import *
 import pygame
 import os
 import random
+import cv2
+from moviepy import VideoFileClip
 # Not moving units
 from Props.resources import resource
 from Props.mouse import mouse
@@ -26,7 +28,7 @@ from Actors.Cannon import cannon
 # CHANGE SCREEN RESOLUTION HERE 
 
 SCREEN_SIZE = (1440,900)
-
+video_file = "video\Introvid.mpeg"
 
 def main(cond=None):
    '''Runs the game '''
@@ -41,9 +43,74 @@ def main(cond=None):
   
    #########################################
    #FULL SCREEN MODE. Uncomment to make full screen 
-   #screen = pygame.display.set_mode(list(SCREEN_SIZE),pygame.FULLSCREEN) #SET TO FULL SCREEN
+   screen = pygame.display.set_mode(list(SCREEN_SIZE),pygame.FULLSCREEN) #SET TO FULL SCREEN
    #########################################
-   screen = pygame.display.set_mode(list(SCREEN_SIZE))
+
+
+   ################## ~~~   INTRO VIDEO  ~~~ ################## 
+   # 
+   # 
+   #screen = pygame.display.set_mode((1080, 1080))  # Set to video size
+   pygame.display.set_caption("The Uncivil Defense")
+
+# Make sure video_file is defined
+     # Replace with actual video path
+
+   cap = cv2.VideoCapture(video_file)
+
+   if not cap.isOpened():
+      print(f"Error: Could not open video file {video_file}")
+   else:
+      fps = cap.get(cv2.CAP_PROP_FPS)
+      
+      # Get video properties for centering
+      video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+      video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+      
+      scale_factor = 0.84
+      # Calculate center position (should be 0,0 since both are 1080x1080)
+      video_x = (SCREEN_SIZE[0] - video_width*scale_factor) // 2
+      video_y = (SCREEN_SIZE[1] - int(video_height*scale_factor)-140) // 2
+      
+      # Extract and play audio separately
+      video_clip = VideoFileClip(video_file)
+      audio_file = "temp_audio.wav"
+      video_clip.audio.write_audiofile(audio_file)
+    
+      pygame.mixer.music.load(audio_file)  # Pygame can load audio from video files
+      pygame.mixer.music.play()
+      
+      print(f"Video loaded: {video_width}x{video_height}, FPS: {fps}")
+      
+      # Play video until it ends or is skipped
+      video_playing = True
+      clock = pygame.time.Clock()
+      
+      while video_playing:
+         for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                  video_playing = False
+                  pygame.quit()
+                  return
+         
+         ret, frame = cap.read()
+         if not ret:
+            break
+            
+         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+         video_surface = pygame.surfarray.make_surface(frame_rgb.swapaxes(0, 1))
+         screen.fill((0, 0, 0))
+         screen.blit(video_surface, (video_x, video_y))  # Use calculated position
+         pygame.display.flip()
+         clock.tick(fps)
+      
+      cap.release()
+      pygame.mixer.music.stop()  # S
+
+
+
+
+   #screen = pygame.display.set_mode(list(SCREEN_SIZE))
    background = pygame.image.load(os.path.join("images", "grass6.jpg")).convert()
    #home paths
    homepath =  "testbuilding"
@@ -144,7 +211,7 @@ def main(cond=None):
   
    #Menu path
 
-
+   home.HP = 600
    if cond ==None:
 
       for i in range(10):
@@ -234,8 +301,7 @@ def main(cond=None):
       Menu = True
 
 
-      easyimage = pygame.image.load(easypath)
-
+     
         
       while Menu:
 
@@ -359,14 +425,15 @@ def main(cond=None):
                   leftindex+=1
          
          
-
-         if abs((time-gamestart))>wintime:
+         # video game timer is out, and the castle hasnt fallen. go to main. 
+         print("time  ", time , "gamestart", gamestart, "win time", wintime ,"timer ", wintime-gamestart)
+         if abs((wintime-time))<= 0:
             win = True
             RUNNING = False
             main("w")
 
          
-
+         #STOP warning 
          if abs(timer -time) > 3 and timer != 0:
             warn = False
 
@@ -381,6 +448,9 @@ def main(cond=None):
                siren.play()
                played = True
             
+         #old time is like interval. you are meausring every like i dont know 1 minute and so on, you will start warning them. 
+
+
          if abs(oldtime-time) > interval:
             #print(" This is time " + str(time) +" This is diff " + str(oldtime-time) + " THis is grade " + str(grade) + ' rate ' + str(rate))
          #if (time)%36 ==0 and time != 0 and time != oldtime:
@@ -413,8 +483,6 @@ def main(cond=None):
                
                #invade eastwards
             for i in range (numenemies):
-                     
-                     
                      riflesold = Rifleman(riflepath,randposx-30,randposy+i*(ychange))
                      spearman = Pikeman("Red",randposx+10,randposy+i*(ychange))
                      if random.randint(1,5) == 1:
@@ -435,11 +503,7 @@ def main(cond=None):
 
                      enemylst.append(riflesold)
                      enemylst.append(spearman)
-               
 
-
-
-         
 
          for bullet in projectilelst:
             if bullet.dead ==True:
@@ -487,7 +551,7 @@ def main(cond=None):
 
 
          HPfont =  pygame.font.SysFont("Arial",22)
-         homehp = HPfont.render( str((wintime-time)) + "  Seconds",False,(0,0,0) )
+         homehp = HPfont.render( str(abs(wintime-time)) + "  Seconds",False,(0,0,0) )
          
          screen.blit(homehp,(610,820))
          button.draw(screen,home.isselected())
@@ -687,7 +751,7 @@ def main(cond=None):
                   
                
                if event.type == pygame.KEYUP:
-                  print("============ This is Pos" + str(pygame.mouse.get_pos()))
+                  #print("============ This is Pos" + str(pygame.mouse.get_pos()))
                   for riflesold in allymilitary:
                      riflesold.shooting = False
                   #   rowlst  = []
@@ -1084,20 +1148,20 @@ def main(cond=None):
       
       
       
-      print("win  ", win, "lose ", lose)
+     # print("win  ", win, "lose ", lose)
 
    Win(0)
    if cond == "w":
 
 
-      print("hereeee ====")
+      #("hereeee ====")
       #winsound.play()
       quill = drawable(quillpath,0,0)
       w= True
       while w:
       
         # screen.fill((255,0,255))
-         print("winning")
+         #print("winning")
          screen.blit(victoryimage.image,list((0,0)))
       
 

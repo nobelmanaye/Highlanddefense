@@ -11,7 +11,7 @@ SCREEN_SIZE = (1440,900)
 #0 is win, 1 is lose
 def Win(cond):
 
-   print("this is cond " + str(cond))
+   #print("this is cond " + str(cond))
    
    # initialize the pygame module
    pygame.init()
@@ -95,7 +95,7 @@ def Win(cond):
 
 
             if event.button == 1:
-               print(str((mousepos[0],mousepos[1])))
+               #print(str((mousepos[0],mousepos[1])))
 
 
                if quit.getCollisionRect().collidepoint(mousepos[0],mousepos[1]):

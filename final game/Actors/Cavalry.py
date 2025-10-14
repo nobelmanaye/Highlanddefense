@@ -60,7 +60,7 @@ class cavalry(Character):
        self.target = target
        self.shooting = True
 
-    def shoot(self,clock,projectilelst,enemylst,framerate = 2):
+    def shoot(self,clock,projectilelst,enemylst,ExplosionLst):
       ''''
       Walks the citizen as per the requested frame rate      
       '''

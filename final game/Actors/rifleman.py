@@ -35,6 +35,7 @@ class Rifleman(Character):
         self.shootsound = pygame.mixer.Sound(os.path.join("sound","rifleshooting.wav"))
    
         self.type = "Rifleman"
+        self.angle = 0
         
 
     def quickshootfix(self,color):
@@ -188,7 +189,9 @@ class Rifleman(Character):
        self.target = target
        self.shooting = True
 
-    def shoot(self,clock,projectilelst,enemylst,framerate = 7):
+    def shoot(self,clock,projectilelst,enemylst,ExplosionLst):
+
+      
       ''''
       Walks the citizen as per the requested frame rate      
       '''
@@ -232,7 +235,6 @@ class Rifleman(Character):
       spotted = False
       if self.shooting!= True and self.going !=True:
          distancedict = {}
-
          sortedenemy = []
          for enemy in enemylst:
             if enemy.getCollisionRect().colliderect(self.radar.getCollisionRect()):
@@ -271,18 +273,23 @@ class Rifleman(Character):
 
             if target.getCollisionRect().colliderect(self.rangeup.getCollisionRect()):
                direction = "0"
+               self.angle = 0
 
             elif target.getCollisionRect().colliderect(self.rangedown.getCollisionRect()):
 
                direction = "180"
+               self.angle = 180
 
             elif target.getCollisionRect().colliderect(self.rangeleft.getCollisionRect()):
                direction = "270"
+               self.angle = 270
 
             elif target.getCollisionRect().colliderect(self.rangeright.getCollisionRect()):
                direction = "90"
+               self.angle = 90
             else:
                direction = "0"
+               self.angle = 0
      
             #rint("This is self direction ", self.direction, "this is angle " + str(angle))
 

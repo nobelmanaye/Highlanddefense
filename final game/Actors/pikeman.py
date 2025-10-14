@@ -260,7 +260,7 @@ class Pikeman(Character):
          surface.blit(self.image, list(self.position))
          self.image.set_colorkey(self.image.get_at((0,0)))
 
-    def shoot(self,clock,projectilelst,enemylst,framerate = 2):
+    def shoot(self,clock,projectilelst,enemylst,ExplosionLst):
       ''''
       Walks the citizen as per the requested frame rate      
       '''

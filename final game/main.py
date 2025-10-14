@@ -24,6 +24,8 @@ from Physics.drawable import drawable
 from Actors.rifleman import Rifleman
 from Actors.Cavalry import cavalry
 from Actors.Cannon import cannon
+from Effects import *
+from Cinematics.Explosion import *
 
 # CHANGE SCREEN RESOLUTION HERE 
 
@@ -47,66 +49,34 @@ def main(cond=None):
    #########################################
 
 
-   ################## ~~~   INTRO VIDEO  ~~~ ################## 
-   # 
-   # 
-   #screen = pygame.display.set_mode((1080, 1080))  # Set to video size
-   pygame.display.set_caption("The Uncivil Defense")
+   ################## INTRO VIDEO ################## 
+   screen = pygame.display.set_mode((1080, 1080))
 
-# Make sure video_file is defined
-     # Replace with actual video path
-
-   cap = cv2.VideoCapture(video_file)
-
-   if not cap.isOpened():
-      print(f"Error: Could not open video file {video_file}")
-   else:
-      fps = cap.get(cv2.CAP_PROP_FPS)
-      
-      # Get video properties for centering
-      video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-      video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-      
-      scale_factor = 0.84
-      # Calculate center position (should be 0,0 since both are 1080x1080)
-      video_x = (SCREEN_SIZE[0] - video_width*scale_factor) // 2
-      video_y = (SCREEN_SIZE[1] - int(video_height*scale_factor)-140) // 2
-      
-      # Extract and play audio separately
+   # Extract audio first (your existing audio code)
+   try:
+      #from moviepy.editor import VideoFileClip
       video_clip = VideoFileClip(video_file)
       audio_file = "temp_audio.wav"
       video_clip.audio.write_audiofile(audio_file)
-    
-      pygame.mixer.music.load(audio_file)  # Pygame can load audio from video files
+      pygame.mixer.music.load(audio_file)
       pygame.mixer.music.play()
-      
-      print(f"Video loaded: {video_width}x{video_height}, FPS: {fps}")
-      
-      # Play video until it ends or is skipped
-      video_playing = True
-      clock = pygame.time.Clock()
-      
-      while video_playing:
-         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                  video_playing = False
-                  pygame.quit()
-                  return
-         
-         ret, frame = cap.read()
-         if not ret:
-            break
-            
-         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-         video_surface = pygame.surfarray.make_surface(frame_rgb.swapaxes(0, 1))
-         screen.fill((0, 0, 0))
-         screen.blit(video_surface, (video_x, video_y))  # Use calculated position
-         pygame.display.flip()
-         clock.tick(fps)
-      
-      cap.release()
-      pygame.mixer.music.stop()  # S
+      #print("Playing video with full audio...")
+   except Exception as e:
+      print(f"Audio extraction failed: {e}")
 
+   # Play video with fade effects
+   video_completed = fade_video(
+      screen=screen,
+      video_file=video_file,
+      fade_duration=2.0,      # 2 second fade in/out
+      initial_delay=1000,     # 1 second delay before starting
+      scale_factor=0.8        # 80% size
+   )
+
+   if video_completed:
+      print("Video finished playing")
+   else:
+      print("Video was interrupted")
 
 
 
@@ -195,6 +165,7 @@ def main(cond=None):
    selectedcitizenlst = []
    flamelst = []
    projectilelst = []
+   ExplosionLst = {}
 
    Allbuildings = [buildinglst,[home],resourcelst]
 
@@ -582,22 +553,13 @@ def main(cond=None):
             flame = drawable(flamepath,randx,randy)
             home.HP -=1
             flamelst.append(flame)
-
-
-
-         
-         
-         
+      
          riflemanbutton.image.set_colorkey(riflemanbutton.image.get_at((0,0)))
-         
          riflemanbutton.draw(screen,isbarrackselected)
-
-
 
          pikemanbutton.draw(screen,isbarrackselected)
          pikemanbutton.image.set_colorkey(riflemanbutton.image.get_at((0,0)))
          
-
          cavalrybutton.draw(screen,istowerselected)
          cannonbutton.draw(screen,istowerselected)
 
@@ -637,10 +599,21 @@ def main(cond=None):
                
                fullenemies = [item for item in allymilitary]
                fullenemies.append(home)
-               enemy.shoot(pygame.time,projectilelst,fullenemies,time)
+               enemy.shoot(pygame.time,projectilelst,fullenemies,ExplosionLst)
+               # if enemy.shooting:
+                     
+               #       munition_effect = Handle_explosion(enemy,Explosionlst)
+               #       if type(enemy)==Rifleman:
+
+               #          munition_effect = Explosion(enemy.position.x-10,enemy.position.y+10+30,95, 0.1)   
+               #          munition_effect.duration = 200
+               #          Explosionlst.append(munition_effect)
+               #       if type(enemy)==cannon:
+               #          munition_effect = Explosion(enemy.getPosition()[0]+192,enemy.getPosition()[1]+92)
+               #          munition_effect.duration = 250
+               #          Explosionlst.append(munition_effect)
                enemy.go(gameClock,buildinglst)
                enemy.walk(pygame.time)
-               
                enemy.draw(screen)
                
                
@@ -652,7 +625,15 @@ def main(cond=None):
                   deathsound.set_volume(0.09)
                   deathsound.play()
                   enemylst.remove(enemy)
-                  
+         for cannon_obj, explosion in ExplosionLst.items():
+            explosion.draw(screen)
+
+         # Update and clean up explosions from dictionary - direct approach
+         for cannon_obj, explosion in list(ExplosionLst.items()):
+            explosion.update()
+            if explosion.is_finished():
+               del ExplosionLst[cannon_obj]
+
 
          if len(flamelst) > 0:
             for fire in flamelst:
@@ -661,11 +642,21 @@ def main(cond=None):
          if len(allymilitary)>=1:
             #rint(citizenlst)
             for soldier in allymilitary:
-               soldier.shoot(pygame.time,projectilelst,enemylst,time)
+               soldier.shoot(pygame.time,projectilelst,enemylst,ExplosionLst)
                soldier.go(gameClock,buildinglst)
                soldier.walk(pygame.time)
                
                soldier.draw(screen)
+
+               # if soldier.shooting== True:
+               #    if type(soldier)==Rifleman:
+               #             munition_effect = Explosion(soldier.getPosition()[0]+95,soldier.getPosition()[1]+30,95, 0.3)   
+               #             munition_effect.duration = 200
+               #             Explosionlst.append(munition_effect)
+               #    if type(soldier)==cannon:
+               #             munition_effect = Explosion(soldier.getPosition()[0]+40,soldier.getPosition()[1]+30,45, 0.6)
+               #             munition_effect.duration = 250
+               #             Explosionlst.append(munition_effect)
                if soldier.dead == True:
                   deathsound = hurtlst[random.randint(0,len(hurtlst)-1)]
                   deathsound.set_volume(0.09)
@@ -699,68 +690,24 @@ def main(cond=None):
                if citizen.isselected():
                   selectedexists = True
                   towerbutton.draw(screen)
-         
-         
-         
-         
-
-
-
-            
-         #rint("selected exists: " + str(isbarrackselected))
          if selectedexists:
             barrackbutton.draw(screen) 
-               
-
-               
-            
-            
-         
-         #home.draw(screen)
 
          pygame.display.flip()
 
-         
-
-         
-            
-         
-            
-         
          for event in pygame.event.get():
             
                rand = random.randint(0,1)
-
-               #   if event.type == pygame.KEYDOWN:
-               #       #tutorial = pygame.image.load(os.path.join("images", "axe1.png")).convert()
-               #       #screen.blit(tutorial,[500,500])
-                     
-
-
                      
                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                  # change the value to False, to exit the main loop
+
                   RUNNING = False
 
-                  
-                  
-               #   if event.type == pygame.KEYDOWN:
-               #      for riflesold in allymilitary:
-               #         riflesold.goshoot()
-                  
-                  
                
                if event.type == pygame.KEYUP:
                   #print("============ This is Pos" + str(pygame.mouse.get_pos()))
                   for riflesold in allymilitary:
                      riflesold.shooting = False
-                  #   rowlst  = []
-                  #   for row in board.maze:
-                  #      for pixel in row:
-                  #         if pixel ==1:
-                  #            if board.maze.index(row)  not in rowlst:
-                  #                #print("THis is row " + str(board.maze.index(row))+ "   " +str(row))
-                  #                rowlst.append(board.maze.index(row))
 
                   
                if event.type == pygame.MOUSEBUTTONDOWN:
@@ -812,17 +759,7 @@ def main(cond=None):
                               
                                  displaynotenough = True
                                  notenoughtime = time
-                                 #screen.blit(Noresourcetxt,(800,60))
                               
-                              
-   
-
-                                 #rint("This is gold before: "+ str(register.gold))
-                                 #register.addGold(-1*costregister["citizen"][1])
-                                 #rint("This is gold after: "+ str(register.gold))
-                              
-                                 
-                           
                         for buildings in buildinglst:
                            # if cursor.getCollisionRect().colliderect(buildings.getCollisionRect()):
                            #    if cursor.occupied ==False:

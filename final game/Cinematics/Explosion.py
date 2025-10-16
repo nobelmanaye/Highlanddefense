@@ -348,102 +348,102 @@ class Explosion:
         """Check if the explosion has completed its lifecycle"""
         return not self.active and len(self.flame_particles) == 0 and len(self.smoke_particles) == 0
 
-# Main game loop
-clock = pygame.time.Clock()
-explosions = []  # List to track multiple explosions
+# # Main game loop
+# clock = pygame.time.Clock()
+# explosions = []  # List to track multiple explosions
 
-# CONTROL INSTRUCTIONS
-font = pygame.font.Font(None, 36)
+# # CONTROL INSTRUCTIONS
+# font = pygame.font.Font(None, 36)
 
-running = True
-while running:
-    current_time = pygame.time.get_ticks()
+# running = True
+# while running:
+#     current_time = pygame.time.get_ticks()
     
-    # Handle events
-    size = 1
-    position = [300, 300]
+#     # Handle events
+#     size = 1
+#     position = [300, 300]
     
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             running = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            position = event.pos
+#         if event.type == pygame.MOUSEBUTTONDOWN:
+#             position = event.pos
         
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_s:
-                size = 0.4
-            if event.key == pygame.K_d:
-                size = 1
-            if event.key == pygame.K_f:
-                size = 3
-            if event.key == pygame.K_l:
-                size = 8
+#         elif event.type == pygame.KEYDOWN:
+#             if event.key == pygame.K_s:
+#                 size = 0.4
+#             if event.key == pygame.K_d:
+#                 size = 1
+#             if event.key == pygame.K_f:
+#                 size = 3
+#             if event.key == pygame.K_l:
+#                 size = 8
             
-            if event.key == pygame.K_ESCAPE:
-                running = False
-            elif event.key == pygame.K_SPACE:
-                # Default explosion at cannon position
-                explosions.append(Explosion(CANNON_X + 67, CANNON_Y - 25))
-            elif event.key == pygame.K_1:
-                # High angle explosion at mouse position
-                explosions.append(Explosion(position[0], position[1], 0, size))
-            elif event.key == pygame.K_2:
-                # Low angle explosion at mouse position
-                explosions.append(Explosion(position[0], position[1], 45, size))
-            elif event.key == pygame.K_3:
-                # Small explosion at mouse position
-                explosions.append(Explosion(position[0], position[1], 90, size))
-            elif event.key == pygame.K_4:
-                # Large explosion at mouse position
-                explosions.append(Explosion(position[0], position[1], 135, size))
-            elif event.key == pygame.K_5:
-                # Very large explosion at mouse position
-                explosions.append(Explosion(position[0], position[1], 180, size))
-            elif event.key == pygame.K_6:
-                # Wide angle explosion at mouse position
-                explosions.append(Explosion(position[0], position[1], 225, size))
-            elif event.key == pygame.K_7:
-                # Narrow upward explosion at mouse position
-                explosions.append(Explosion(position[0], position[1], 270, size))
+#             if event.key == pygame.K_ESCAPE:
+#                 running = False
+#             elif event.key == pygame.K_SPACE:
+#                 # Default explosion at cannon position
+#                 explosions.append(Explosion(CANNON_X + 67, CANNON_Y - 25))
+#             elif event.key == pygame.K_1:
+#                 # High angle explosion at mouse position
+#                 explosions.append(Explosion(position[0], position[1], 0, size))
+#             elif event.key == pygame.K_2:
+#                 # Low angle explosion at mouse position
+#                 explosions.append(Explosion(position[0], position[1], 45, size))
+#             elif event.key == pygame.K_3:
+#                 # Small explosion at mouse position
+#                 explosions.append(Explosion(position[0], position[1], 90, size))
+#             elif event.key == pygame.K_4:
+#                 # Large explosion at mouse position
+#                 explosions.append(Explosion(position[0], position[1], 135, size))
+#             elif event.key == pygame.K_5:
+#                 # Very large explosion at mouse position
+#                 explosions.append(Explosion(position[0], position[1], 180, size))
+#             elif event.key == pygame.K_6:
+#                 # Wide angle explosion at mouse position
+#                 explosions.append(Explosion(position[0], position[1], 225, size))
+#             elif event.key == pygame.K_7:
+#                 # Narrow upward explosion at mouse position
+#                 explosions.append(Explosion(position[0], position[1], 270, size))
     
-    # Update all explosions
-    for explosion in explosions[:]:
-        explosion.update()
-        if explosion.is_finished():
-            explosions.remove(explosion)
+#     # Update all explosions
+#     for explosion in explosions[:]:
+#         explosion.update()
+#         if explosion.is_finished():
+#             explosions.remove(explosion)
     
-    # Draw everything
-    screen.fill(BLACK)
+#     # Draw everything
+#     screen.fill(BLACK)
     
-    # Draw cannon
-    pygame.draw.rect(screen, (139, 69, 19), (CANNON_X, CANNON_Y - 20, 60, 20))
-    pygame.draw.rect(screen, (80, 80, 80), (CANNON_X + 40, CANNON_Y - 15, 40, 10))
+#     # Draw cannon
+#     pygame.draw.rect(screen, (139, 69, 19), (CANNON_X, CANNON_Y - 20, 60, 20))
+#     pygame.draw.rect(screen, (80, 80, 80), (CANNON_X + 40, CANNON_Y - 15, 40, 10))
     
-    # Draw all explosions
-    for explosion in explosions:
-        explosion.draw(screen)
+#     # Draw all explosions
+#     for explosion in explosions:
+#         explosion.draw(screen)
     
-    # Draw control instructions
-    instructions = [
-        "SPACE: Default explosion",
-        "1: High angle (0°)",
-        "2: Low angle (45°)", 
-        "3: Small (0.5x)",
-        "4: Large (1.5x)",
-        "5: Very large (2.0x)",
-        "6: Wide angle (225°)",
-        "7: Narrow upward (270°)",
-        "Click + Number: Explosion at mouse"
-    ]
+#     # Draw control instructions
+#     instructions = [
+#         "SPACE: Default explosion",
+#         "1: High angle (0°)",
+#         "2: Low angle (45°)", 
+#         "3: Small (0.5x)",
+#         "4: Large (1.5x)",
+#         "5: Very large (2.0x)",
+#         "6: Wide angle (225°)",
+#         "7: Narrow upward (270°)",
+#         "Click + Number: Explosion at mouse"
+#     ]
     
-    for i, instruction in enumerate(instructions):
-        text = font.render(instruction, True, (255, 255, 255))
-        screen.blit(text, (10, 10 + i * 30))
+#     for i, instruction in enumerate(instructions):
+#         text = font.render(instruction, True, (255, 255, 255))
+#         screen.blit(text, (10, 10 + i * 30))
     
-    # Update the display
-    pygame.display.flip()
-    clock.tick(60)
+#     # Update the display
+#     pygame.display.flip()
+#     clock.tick(60)
 
-# Quit Pygame
-pygame.quit()
+# # Quit Pygame
+# pygame.quit()

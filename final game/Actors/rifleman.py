@@ -1,4 +1,3 @@
-
 from doctest import ELLIPSIS_MARKER
 import pygame
 import os
@@ -8,15 +7,13 @@ from Physics.vector2D import Vector2
 from Physics.physics import Distance,rad
 from Physics.projectile import Projectile
 from Props.Panel import panel
-
-
 from Actors.character import Character
-
 from Physics.drawable import drawable
+from Cinematics.Explosion import *
 
 Bonus = {"Cannon":10, "Pikeman":13,"Building":-8,"Cavalry":5,"Rifleman":10}
-class Rifleman(Character):
 
+class Rifleman(Character):
     def __init__(self,path,xposition,yposition,color="Green"):
         self.color = color
         super().__init__(path,xposition,yposition)
@@ -33,7 +30,7 @@ class Rifleman(Character):
         self.shootcursor = 1
         self.cocksound = pygame.mixer.Sound(os.path.join("sound","cocking.wav"))
         self.shootsound = pygame.mixer.Sound(os.path.join("sound","rifleshooting.wav"))
-   
+        self.explosion_size = 0.9
         self.type = "Rifleman"
         self.angle = 0
         
@@ -190,10 +187,8 @@ class Rifleman(Character):
        self.shooting = True
 
     def shoot(self,clock,projectilelst,enemylst,ExplosionLst):
-
-      
       ''''
-      Walks the citizen as per the requested frame rate      
+      Handles rifleman shooting with explosion effects
       '''
      
       time = clock.get_ticks()/28
@@ -245,9 +240,6 @@ class Rifleman(Character):
 
          if spotted:
             sortedenemy.sort()
-            
-
-
             target = distancedict[sortedenemy[0]]
 
             xdiff = self.getPosition().x -target.getPosition().x
@@ -266,9 +258,6 @@ class Rifleman(Character):
 
       if self.shooting:
             sortedenemy.sort()
-            
-
-
             target = distancedict[sortedenemy[0]]
 
             if target.getCollisionRect().colliderect(self.rangeup.getCollisionRect()):
@@ -276,7 +265,6 @@ class Rifleman(Character):
                self.angle = 0
 
             elif target.getCollisionRect().colliderect(self.rangedown.getCollisionRect()):
-
                direction = "180"
                self.angle = 180
 
@@ -291,24 +279,13 @@ class Rifleman(Character):
                direction = "0"
                self.angle = 0
      
-            #rint("This is self direction ", self.direction, "this is angle " + str(angle))
-
             if self.color== "Green":
                   self.shootimage = pygame.image.load(os.path.join("images\Rifleman\Green\Shooting", direction+"shooting"+str(max(1,round(self.shootcursor/frame)))+".png")).convert()
             else:
                   self.shootimage = pygame.image.load(os.path.join("images\Rifleman\Red\Shooting", direction+"shooting"+str(max(1,round(self.shootcursor/frame)))+".png")).convert()
             self.shootimage.set_colorkey(self.image.get_at((0,0)))
-            #print("difference " + str(abs(time -self.starttime )))
-            # if abs(time -self.starttime) > 0.7:
-            #    # Update time every 2.1 ish seconds
-               
-            #    self.changetime(time)
-            
                        
-                    
-
             if self.shootcursor <=14*frame:
-                     #Move the Animatioon framecursor as long as it is below the frame amount
                      self.shootcursor +=1
             if self.shootcursor >14*frame:
                      self.shootcursor = 1
@@ -320,53 +297,72 @@ class Rifleman(Character):
                   self.shootcursor-= delay
 
             if self.shootcursor == 10*frame:
+                     # Create rifle muzzle flash explosion
+                     self.create_rifle_explosion(direction, ExplosionLst)
+                     
                      bullet = Projectile(self.position.x-10,self.position.y+10,400,int(direction),enemylst)
-
                      bullet.attack += Bonus[target.type]
                      projectilelst.append(bullet)
+                     
                      channel = pygame.mixer.find_channel()
                      if channel is not None and channel.get_busy() != True:
                         channel.set_volume(0.7)
-                        
                         delay = random.randint(1,2)
-
                         if delay ==1:
                            channel.set_volume(0.2)
-                           
                            channel.play(self.shootsound)
                         else:
                            self.shootsound.set_volume(0.05)
                            channel.play(self.shootsound2)
             
-
-
             if self.shootcursor == 2*frame:
-                     
                      channel = pygame.mixer.find_channel()
-                     
-                     
                      delay = random.randint(1,3)
                      if channel is not None and channel.get_busy() != True and delay ==2:
                         channel.set_volume(0.2)
                         channel.play(self.cocksound)
-
                   
             if self.cursor in(5*frame,6*frame,7*frame):
-                     
-                      delay = random.randint(1,5)
-                      if delay == 4:
-
+                     delay = random.randint(1,5)
+                     if delay == 4:
                         self.cursor -= round(0.75*frame)
-               
-                     
 
-                   
+    def create_rifle_explosion(self, direction, ExplosionLst):
+        '''
+        Creates muzzle flash explosion effect at rifle barrel based on shooting direction
+        '''
+        if direction == "90":  # Right
+            explosion_x = self.position.x + 52
+            explosion_y = self.position.y + 21
+            explosion_angle = abs(90-90)
+        elif direction == "180":  # Down
+            explosion_x = self.position.x + 59
+            explosion_y = self.position.y + 80
+            explosion_angle = abs(180-90)
+        elif direction == "0":  # Up
+            explosion_x = self.position.x + 32
+            explosion_y = self.position.y + 19
+            explosion_angle =270
+        elif direction == "270":  # Left
+            explosion_x = self.position.x 
+            explosion_y = self.position.y + 28
+            explosion_angle = 270-90
+      #   else:
+      #       explosion_x = self.position.x + 60
+      #       explosion_y = self.position.y + 30
+      #       explosion_angle = 0
+        
+        # Create smaller, shorter explosion for rifle muzzle flash
+        rifle_explosion = Explosion(explosion_x, explosion_y, explosion_angle,
+                                  self.explosion_size)
+        rifle_explosion.duration = 150  # Very short duration for muzzle flash
+        
+        # Use rifleman object as key in dictionary
+        ExplosionLst[self] = rifle_explosion
+
     def updateadjust(self):
       cpointy = self.position.y +self.centery*self.getHeight()+19
       cpointx = self.position.x +self.centerx*self.getWidth()-2
-
-      
-
 
       self.up.position.x = cpointx 
       self.up.position.y = cpointy - self.veradjust
@@ -449,4 +445,3 @@ class Rifleman(Character):
          #If its not in a going state change the image to the defualt reserve image
          
          self.image = self.imageres
-         

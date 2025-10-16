@@ -174,20 +174,20 @@ class cannon(Character):
         '''
         if direction == "90":  # Right
             explosion_x = self.position.x + 192
-            explosion_y = self.position.y + 92
+            explosion_y = self.position.y + 37
             explosion_angle = 0
         elif direction == "180":  # Down
-            explosion_x = self.position.x + 86
-            explosion_y = self.position.y + 150
+            explosion_x = self.position.x + 90
+            explosion_y = self.position.y + 90
             explosion_angle = 90
         elif direction == "0":  # Up
-            explosion_x = self.position.x + 86
-            explosion_y = self.position.y - 30
+            explosion_x = self.position.x + 90
+            explosion_y = self.position.y + 2
             explosion_angle = 270
         elif direction == "270":  # Left
-            explosion_x = self.position.x - 30
-            explosion_y = self.position.y + 92
-            explosion_angle = 180
+            explosion_x = self.position.x + 60
+            explosion_y = self.position.y + 37
+            explosion_angle = 270
         else:
             explosion_x = self.position.x + 192
             explosion_y = self.position.y + 92

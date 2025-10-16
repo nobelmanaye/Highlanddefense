@@ -397,7 +397,7 @@ def main(cond=None):
          
          
          # video game timer is out, and the castle hasnt fallen. go to main. 
-         print("time  ", time , "gamestart", gamestart, "win time", wintime ,"timer ", wintime-gamestart)
+         #rint("time  ", time , "gamestart", gamestart, "win time", wintime ,"timer ", wintime-gamestart)
          if abs((wintime-time))<= 0:
             win = True
             RUNNING = False

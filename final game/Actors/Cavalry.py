@@ -34,7 +34,7 @@ class cavalry(Character):
         self.shootcursor = 1
         self.attack = 40
         self.HP = 150
-        self.type = "Cavalry"
+        
 
         self.rangeimage = os.path.join("images\Cavalry","up.png")
         self.verimage= os.path.join("images\Cavalry","side.png")
@@ -55,7 +55,8 @@ class cavalry(Character):
 
         self.radarimage = os.path.join("images","radar.png")
         self.radar= drawable(self.radarimage,0,0)
-
+        self.type = "Cavalry"
+     
     def goshoot(self,target =None):
        self.target = target
        self.shooting = True

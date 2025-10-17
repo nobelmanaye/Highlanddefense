@@ -665,6 +665,7 @@ def main(cond=None):
                
          for bullet in projectilelst:
             bullet.draw(screen)
+            bullet.draw_collide_im(screen)
             bullet.travel(gameClock)
 
                

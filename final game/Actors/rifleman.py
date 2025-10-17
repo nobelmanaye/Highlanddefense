@@ -77,6 +77,7 @@ class Rifleman(Character):
        self.rangelst = [self.rangeup,self.rangedown,self.rangeright,self.rangeleft]
        self.radarimage = os.path.join("images","radar.png")
        self.radar= drawable(self.radarimage,0,0)
+     
 
 
 
@@ -114,8 +115,8 @@ class Rifleman(Character):
         
         self.updatecollide()
         self.updaterange()
-        #self.rangeup.draw(surface)
-        #pygame.draw.rect(surface,(0,0,255),self.getCollisionRect())
+      #   self.rangeup.draw(surface)
+      #   pygame.draw.rect(surface,(0,0,255),self.getCollisionRect())
 
           
 
@@ -302,6 +303,7 @@ class Rifleman(Character):
                      
                      bullet = Projectile(self.position.x-10,self.position.y+10,400,int(direction),enemylst)
                      bullet.attack += Bonus[target.type]
+                     bullet.multiply_speed(3)
                      projectilelst.append(bullet)
                      
                      channel = pygame.mixer.find_channel()

@@ -55,6 +55,7 @@ class cannon(Character):
         self.radar= drawable(self.radarimage,0,0)
 
         self.rangelst = [self.rangeup,self.rangedown,self.rangeright,self.rangeleft]
+        self.type = "Cannon"
 
     def goshoot(self,target =None):
        self.target = target
@@ -207,9 +208,11 @@ class cannon(Character):
         if direction == "90":  # Right
             bullet = Projectile(self.position.x + 135, self.position.y + 31, 400, int(direction), enemylst)
         elif direction == "180":  # Down
-            bullet = Projectile(self.position.x + 86, self.position.y + 89, 400, int(direction), enemylst)
+            bullet = Projectile(self.position.x+ 42,
+                                 self.position.y + 88, 400, int(direction), enemylst)
         elif direction == "0":  # Up
-            bullet = Projectile(self.position.x - 10 + 0.33 * self.getWidth(), self.position.y - self.getHeight(), 400, int(direction), enemylst)
+            bullet = Projectile(self.position.x+70
+                                 , self.position.y , 400, int(direction), enemylst)
         elif direction == "270":  # Left
             bullet = Projectile(self.position.x - 10, self.position.y + 10, 400, int(direction), enemylst)
         else:

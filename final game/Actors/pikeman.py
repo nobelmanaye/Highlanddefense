@@ -33,12 +33,14 @@ class Pikeman(Character):
         self.shootcursor = 1
         self.attack = 40
         self.HP = 100
-        self.type = "Pikeman"
+
 
 
         self.sword1 = pygame.mixer.Sound(os.path.join("sound","Sword1.wav"))
         self.sword2 = pygame.mixer.Sound(os.path.join("sound","Sword2.wav"))
       
+        self.sword1.set_volume(0.3)
+        self.sword2.set_volume(0.3)
         self.rangeimage = os.path.join("images\Cavalry","up.png")
         self.verimage= os.path.join("images\Cavalry","side.png")
         self.walkimage = self.image
@@ -55,7 +57,7 @@ class Pikeman(Character):
 
         self.radarimage = os.path.join("images","radar.png")
         self.radar= drawable(self.radarimage,0,0)
-
+        self.type = "Pikeman"
 
     def goshoot(self,target =None):
        self.target = target

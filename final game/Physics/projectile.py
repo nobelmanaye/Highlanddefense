@@ -13,17 +13,19 @@ class Projectile(drawable):
 
     def __init__(self,xposition,yposition,velocity = 300,angle = 90,enemies=None,damage=10):
         path = os.path.join("images\Projectiles","riflebullet.png")
-        self.dead = False
+        collidepath = os.path.join("images\Projectiles","bullet_collideim.jpg")
+        self.dead = False 
         self.angle = angle
         self.enemies = enemies
         self.attack = damage
-        
+      
         self.shell = False
         self.start = [xposition,yposition]
         self.range =240
-
-
-        
+        self.velocity = 0
+        self.angle = angle
+    
+        self.collideim =drawable(collidepath,xposition,yposition,)
         super().__init__(path,xposition,yposition)
         if not self.shell:
             rad = angle*math.pi/180
@@ -56,6 +58,21 @@ class Projectile(drawable):
         
         self.shell = True
         self.range = 360
+    def multiply_speed(self, factor):
+         angle = self.angle
+         if angle in (0,180):
+            self.velocity.y *= factor
+         else:
+            self.velocity.x *= factor
+            
+
+
+        
+           
+    def draw_collide_im(self,surface):
+        self.collideim.draw(surface)
+        
+        self.collideim.image.set_colorkey(self.collideim.image.get_at((0,0)))
         
     def travel(self,time):
         oldpos = self.position
@@ -65,17 +82,26 @@ class Projectile(drawable):
         self.position.y = newposy
 
         
-            
+        self.collideim.position.x = self.position.x
+        self.collideim.position.y= self.position.y
         if Distance(self.start,list(self.position)) > self.range:
                 self.dead = True
 
         for enemy in self.enemies:
-            if self.getCollisionRect().colliderect(enemy.getCollisionRect()):
+
+            if self.collideim.getCollisionRect().colliderect(enemy.getCollisionRect()):
                 if enemy.type=="Building":
-                    print("Recieving damage " + enemy.type  + " "+ str(self.attack))
+                 #  print("Recieving damage " + enemy.type  + " "+ str(self.attack))
                     enemy.recvDamage(self.attack)
             
                     self.dead = True
+
+                else:
+                     enemy.recvDamage(self.attack)
+                     projectile_nm = "rifleman" if not self.shell else "cannon"
+                     print( "Recieving damage from " + projectile_nm + " to "+enemy.type  + " "+ str(self.attack) )
+                     self.dead = True
+
     def die(self):
         self.dead = True
 

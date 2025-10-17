@@ -810,10 +810,13 @@ def main(cond=None):
                                  
                                  
                                  #rint("gold " +str(register.gold))
-                                 if(gold -costregister["pikeman"][1]) >0 and (Wood -costregister["pikeman"][0]):# the soldier becomes a boolean if there are not enough resources
+                                 if gold >= costregister["pikeman"][1] and Wood >= costregister["pikeman"][0]:
 
                                     register.addGold(-1*costregister["pikeman"][1])
                                     register.addWood(-1*costregister["pikeman"][0])
+
+                                    gold += -1*costregister["pikeman"][1]
+                                    Wood += -1*costregister["pikeman"][0]
 
                                     gold += -1*costregister["pikeman"][1]
                                     Wood += -1*costregister["pikeman"][0]

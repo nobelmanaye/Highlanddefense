@@ -338,8 +338,8 @@ class Rifleman(Character):
             explosion_y = self.position.y + 21
             explosion_angle = abs(90-90)
         elif direction == "180":  # Down
-            explosion_x = self.position.x + 59
-            explosion_y = self.position.y + 80
+            explosion_x = self.position.x + 28
+            explosion_y = self.position.y + 110
             explosion_angle = abs(180-90)
         elif direction == "0":  # Up
             explosion_x = self.position.x + 32

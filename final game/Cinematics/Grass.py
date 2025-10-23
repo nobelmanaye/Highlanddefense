@@ -88,26 +88,28 @@ class GrassPatch:
             grass.draw(surface, time)
 
 class GrassArea:
-    def __init__(self, screen_size, grass_rect=None):
+    def __init__(self, screen_size, grass_rects=None):
         """
-        Initialize GrassArea with optional rectangular boundary
+        Initialize GrassArea with optional list of rectangular boundaries
         
         Args:
             screen_size: Tuple (width, height) of the screen
-            grass_rect: pygame.Rect or tuple (x, y, width, height) defining grass area
-                       If None, uses entire screen
+            grass_rects: List of pygame.Rect or tuples (x, y, width, height) defining grass areas
+                        If None, uses entire screen
         """
         self.screen_size = screen_size
         
         # Set grass area boundaries
-        if grass_rect:
-            if isinstance(grass_rect, pygame.Rect):
-                self.grass_rect = grass_rect
-            else:
-                self.grass_rect = pygame.Rect(grass_rect)
+        if grass_rects:
+            self.grass_rects = []
+            for rect in grass_rects:
+                if isinstance(rect, pygame.Rect):
+                    self.grass_rects.append(rect)
+                else:
+                    self.grass_rects.append(pygame.Rect(rect))
         else:
-            # Use entire screen if no rect provided
-            self.grass_rect = pygame.Rect(0, 0, screen_size[0], screen_size[1])
+            # Use entire screen if no rects provided
+            self.grass_rects = [pygame.Rect(0, 0, screen_size[0], screen_size[1])]
         
         # Wind properties
         self.wind_strength = 0.5  # Default medium wind
@@ -118,27 +120,60 @@ class GrassArea:
         self.grass_patches = []
     
     def create_grass_patches(self, num_patches=40, grasses_per_patch=25, patch_radius=15, yellow_ratio=0.4):
-        """Create grass patches within the defined rectangular area"""
+        """Create grass patches within the defined rectangular areas"""
         self.grass_patches = []
-        for i in range(num_patches):
-            # Generate patch position within the grass rectangle boundaries
+        
+        # Distribute patches evenly among the rectangles
+        patches_per_rect = max(1, num_patches // len(self.grass_rects))
+        
+        for grass_rect in self.grass_rects:
+            for i in range(patches_per_rect):
+                # Generate patch position within the current grass rectangle boundaries
+                patch_x = random.randint(
+                    grass_rect.left + patch_radius, 
+                    grass_rect.right - patch_radius
+                )
+                patch_y = random.randint(
+                    grass_rect.top + patch_radius, 
+                    grass_rect.bottom - patch_radius
+                )
+                self.grass_patches.append(GrassPatch(patch_x, patch_y, grasses_per_patch, patch_radius, yellow_ratio))
+        
+        # Add any remaining patches to random rectangles
+        remaining_patches = num_patches - (patches_per_rect * len(self.grass_rects))
+        for i in range(remaining_patches):
+            grass_rect = random.choice(self.grass_rects)
             patch_x = random.randint(
-                self.grass_rect.left + patch_radius, 
-                self.grass_rect.right - patch_radius
+                grass_rect.left + patch_radius, 
+                grass_rect.right - patch_radius
             )
             patch_y = random.randint(
-                self.grass_rect.top + patch_radius, 
-                self.grass_rect.bottom - patch_radius
+                grass_rect.top + patch_radius, 
+                grass_rect.bottom - patch_radius
             )
             self.grass_patches.append(GrassPatch(patch_x, patch_y, grasses_per_patch, patch_radius, yellow_ratio))
+            
         return self.grass_patches
     
-    def set_grass_area(self, grass_rect):
-        """Change the grass area rectangle"""
+    def set_grass_areas(self, grass_rects):
+        """Change the grass area rectangles"""
+        self.grass_rects = []
+        for rect in grass_rects:
+            if isinstance(rect, pygame.Rect):
+                self.grass_rects.append(rect)
+            else:
+                self.grass_rects.append(pygame.Rect(rect))
+    
+    def add_grass_area(self, grass_rect):
+        """Add a new grass area rectangle"""
         if isinstance(grass_rect, pygame.Rect):
-            self.grass_rect = grass_rect
+            self.grass_rects.append(grass_rect)
         else:
-            self.grass_rect = pygame.Rect(grass_rect)
+            self.grass_rects.append(pygame.Rect(grass_rect))
+    
+    def clear_grass_areas(self):
+        """Clear all grass areas"""
+        self.grass_rects = []
     
     def set_wind(self, strength, direction):
         """Set wind strength and direction"""

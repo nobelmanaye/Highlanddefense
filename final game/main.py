@@ -26,6 +26,7 @@ from Actors.Cavalry import cavalry
 from Actors.Cannon import cannon
 from Effects import *
 from Cinematics.Explosion import *
+from Cinematics.Grass import GrassArea, GrassPatch
 
 # CHANGE SCREEN RESOLUTION HERE 
 
@@ -50,7 +51,7 @@ def main(cond=None):
 
 
    ################## INTRO VIDEO ################## 
-   screen = pygame.display.set_mode((1080, 1080))
+  # screen = pygame.display.set_mode((1080, 1080))
 
    # Extract audio first (your existing audio code)
    try:
@@ -81,7 +82,10 @@ def main(cond=None):
 
 
    #screen = pygame.display.set_mode(list(SCREEN_SIZE))
-   background = pygame.image.load(os.path.join("images", "grass6.jpg")).convert()
+   background = pygame.image.load(os.path.join("images/background","grass8.png")).convert()
+   #background = pygame.image.load(os.path.join("images/background", "yellow_background.jpg")).convert()
+  #background = pygame.image.load(os.path.join("images/background", "smoother_yellow.jpg")).convert()
+   
    #home paths
    homepath =  "testbuilding"
    homepathdir = "images"
@@ -103,7 +107,7 @@ def main(cond=None):
    #Tutorial Paths
    leftclickpath =os.path.join("images\Tutorial", "leftclick.png")
    rightclickpath = os.path.join("images\Tutorial", "rightclick.png")
-   notenoughim = os.path.join("images","Notenough.png")
+   notenoughim = os.path.join("images\Messages","Not_enough_gold.png")
    #Tutorial Objects
    leftclick = panel(leftclickpath,leftclickpath,800,400)
    rightclick = panel(rightclickpath,rightclickpath,300,400)
@@ -143,7 +147,7 @@ def main(cond=None):
    flag1 = drawable(flag1path,home.position.x+74,pole.position.y)
    flag2 = drawable(flag2path,home.position.x+74,home.position.y+pole.getHeight())
 
-   notenough = panel(notenoughim,notenoughim,874,308)
+   notenough = panel(notenoughim,notenoughim,750, 108)
    
    
 
@@ -166,17 +170,29 @@ def main(cond=None):
    flamelst = []
    projectilelst = []
    ExplosionLst = {}
+  
+
 
    Allbuildings = [buildinglst,[home],resourcelst]
 
 
    leftindex = 0
    rightindex = 0
-
    enemylst = []
-   
+   wind_change_timer = 0
+   wind_change_interval = 180  # Chan
+   grass_rect = pygame.Rect(897, 23, 509, 353)  # x, y, width, height
 
+# Initialize grass area with the specific rectangle
+   grass_area = GrassArea(SCREEN_SIZE, grass_rect=grass_rect)
+   num_patches, grasses_per_patch, patch_radius, yellow_ratio = 20, 60, 20, 0.7  # Less patches, more grasses, more yellow
+   grass_patches = grass_area.create_grass_patches(num_patches, grasses_per_patch, patch_radius, yellow_ratio)
+   shadow_surface = pygame.Surface(SCREEN_SIZE, pygame.SRCALPHA)
 
+   wind_strength = 0.23
+   wind_direction = 1
+   wind_change_timer = 0
+   wind_change_interval = 10*180
    #Tick the clock
    gameClock = pygame.time.Clock()
   
@@ -265,6 +281,7 @@ def main(cond=None):
       
       finished = True
       displaynotenough =False
+      notenough_wood = False
       # main loop
 
       played = False
@@ -365,15 +382,16 @@ def main(cond=None):
          screen.fill((255,255,255))
          time = int(pygame.time.get_ticks()/1000)
 
+         #flag changing variables
          ychange = home.HP*flagrate
-
-
          flag1.position.y = pole.position.y -ychange+93
          flag2.position.y = home.position.y+pole.getHeight()+ychange-93
 
 
 
-         
+
+         # Update and draw grass
+       
          if finished:
             leftclick.position = (-400,-400)
             rightclick.position = (-400,-400)
@@ -443,6 +461,9 @@ def main(cond=None):
             cannondie = random.randint(1,max(2,cannonlimit))
             direction = 0
             
+            
+            
+
 
             if direction  == 0:
                xchange = 0
@@ -451,6 +472,7 @@ def main(cond=None):
                randposy = random.randint(93,180)
 
    
+
                
                #invade eastwards
             for i in range (numenemies):
@@ -476,20 +498,38 @@ def main(cond=None):
                      enemylst.append(spearman)
 
 
+
          for bullet in projectilelst:
             if bullet.dead ==True:
                projectilelst.remove(bullet)
-            #   for enemy in enemylst:
-            #      if bullet.getCollisionRect().colliderect(enemy.getCollisionRect()):
-            #         enemy.recvDamage(4)
-            #         bullet.die()
-            #         hurt.play()
 
-         # Draw everything, adjust by offset
+         # clear shadow surface, then draw grass
+
          screen.blit(background,list((0,0)))
          if warn == True:
             screen.blit(warningtxt,(874,308))
          
+         if displaynotenough:
+            if abs(time-notenoughtime)< 5:
+               notenough.draw(screen)
+
+
+                  
+         wind_change_timer += 1
+         if wind_change_timer >= wind_change_interval:
+            wind_change_timer = 0
+            # Small random wind variation (±0.1)
+            wind_variation = random.uniform(-0.1, 0.1)
+            current_wind = max(0.1, min(1.0, wind_strength + wind_variation))  # Keep between 0.1 and 1.0
+            grass_area.set_wind(current_wind, wind_direction)
+         else:
+            grass_area.set_wind(wind_strength, wind_direction)
+
+         # Update and draw grass
+
+         
+         grass_area.update(pygame.time.get_ticks() / 1000.0)
+         grass_area.draw(screen, pygame.time.get_ticks() / 1000.0)
          isbarrackselected = False
          istowerselected = False
          #screen.blit(collide,list(man.position))
@@ -514,10 +554,6 @@ def main(cond=None):
 
          goldingot.draw(screen)
          woodingot.draw(screen)
-
-         if displaynotenough:
-            if abs(time-notenoughtime)< 5:
-               notenough.draw(screen)
 
 
 
@@ -600,18 +636,6 @@ def main(cond=None):
                fullenemies = [item for item in allymilitary]
                fullenemies.append(home)
                enemy.shoot(pygame.time,projectilelst,fullenemies,ExplosionLst)
-               # if enemy.shooting:
-                     
-               #       munition_effect = Handle_explosion(enemy,Explosionlst)
-               #       if type(enemy)==Rifleman:
-
-               #          munition_effect = Explosion(enemy.position.x-10,enemy.position.y+10+30,95, 0.1)   
-               #          munition_effect.duration = 200
-               #          Explosionlst.append(munition_effect)
-               #       if type(enemy)==cannon:
-               #          munition_effect = Explosion(enemy.getPosition()[0]+192,enemy.getPosition()[1]+92)
-               #          munition_effect.duration = 250
-               #          Explosionlst.append(munition_effect)
                enemy.go(gameClock,buildinglst)
                enemy.walk(pygame.time)
                enemy.draw(screen)
@@ -725,7 +749,9 @@ def main(cond=None):
                   if event.button ==1:
 
                      #**********************LEFT CLICK ATIONS *****************************************************
-
+                        print("\n")
+                        print("Mouse position : ", pygame.mouse.get_pos() )
+                        print("\n")
                         for soldier in allymilitary:
                            if cursor.getCollisionRect().colliderect(soldier.getCollisionRect()):
                                     #mouse is selecting the human

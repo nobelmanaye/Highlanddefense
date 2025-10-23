@@ -1,5 +1,6 @@
 import cv2 
 import pygame
+
 def fade_video(screen, video_file, fade_duration=2.0, initial_delay=0, scale_factor=0.8):
     """
     Play a video with fade in/out effects
@@ -21,11 +22,16 @@ def fade_video(screen, video_file, fade_duration=2.0, initial_delay=0, scale_fac
     video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     
+    # Get screen dimensions
+    screen_width, screen_height = screen.get_size()
+    
     # Scale video
     new_width = int(video_width * scale_factor)
     new_height = int(video_height * scale_factor)
-    video_x = (1080 - new_width) // 2
-    video_y = (1080 - new_height) // 2
+    
+    # Center the video on screen
+    video_x = (screen_width - new_width) // 2
+    video_y = (screen_height - new_height) // 2
     
     # Get video duration for fade out timing
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -78,7 +84,7 @@ def fade_video(screen, video_file, fade_duration=2.0, initial_delay=0, scale_fac
         fade_surface.blit(video_surface, (0, 0))
         fade_surface.set_alpha(fade_alpha)
         
-        # Draw to screen
+        # Draw to screen - fill with black first, then center the video
         screen.fill((0, 0, 0))
         screen.blit(fade_surface, (video_x, video_y))
         pygame.display.flip()

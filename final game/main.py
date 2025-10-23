@@ -181,10 +181,10 @@ def main(cond=None):
    enemylst = []
    wind_change_timer = 0
    wind_change_interval = 180  # Chan
-   grass_rect = pygame.Rect(897, 23, 509, 353)  # x, y, width, height
+   grass_rect =pygame.Rect(897, 23, 509, 353) # x, y, width, height
 
 # Initialize grass area with the specific rectangle
-   grass_area = GrassArea(SCREEN_SIZE, grass_rect=grass_rect)
+   grass_area = GrassArea(SCREEN_SIZE,[grass_rect])
    num_patches, grasses_per_patch, patch_radius, yellow_ratio = 20, 60, 20, 0.7  # Less patches, more grasses, more yellow
    grass_patches = grass_area.create_grass_patches(num_patches, grasses_per_patch, patch_radius, yellow_ratio)
    shadow_surface = pygame.Surface(SCREEN_SIZE, pygame.SRCALPHA)

@@ -122,6 +122,8 @@ def main(cond=None):
    hurt4 = pygame.mixer.Sound(os.path.join("sound","hurt4.wav"))
    hurtlst=[hurt4,hurt3]
    siren = pygame.mixer.Sound(os.path.join("sound","siren.wav"))
+   no_gold_sound = pygame.mixer.Sound(os.path.join("sound", "notifications", "no_gold.mp3"))
+   no_gold_sound.set_volume(1)  # Adjust volume as needed
 
    #Menu initializaion
    selectedbuttons = [easy1path,medium1path,hard1path,tutorial1path,quit1path]
@@ -147,9 +149,11 @@ def main(cond=None):
    flag1 = drawable(flag1path,home.position.x+74,pole.position.y)
    flag2 = drawable(flag2path,home.position.x+74,home.position.y+pole.getHeight())
 
-   notenough = panel(notenoughim,notenoughim,750, 108)
+   notenough = panel(notenoughim,notenoughim,1464, 108)
+   notenough.velocity[0] = -0.8
+   notenough.type = "Dynamic"
    
-   
+   #stop at 1064, 108
 
    cursor = mouse(mouse1)
    #+==================================================
@@ -181,7 +185,7 @@ def main(cond=None):
    enemylst = []
    wind_change_timer = 0
    wind_change_interval = 180  # Chan
-   grass_rect =pygame.Rect(897, 23, 509, 353) # x, y, width, height
+   grass_rect = pygame.Rect(383, 24, 591, 331) 
 
 # Initialize grass area with the specific rectangle
    grass_area = GrassArea(SCREEN_SIZE,[grass_rect])
@@ -511,14 +515,17 @@ def main(cond=None):
          
          if displaynotenough:
             if abs(time-notenoughtime)< 5:
-               notenough.draw(screen)
+               notenough.draw(screen,True,False,gameClock)
+            #stop ones it reaches positon ( x= 1064)
+            if list(notenough.position)[0] <= 1064:
+               notenough.stop()
+               #notenough.play_no_gold_sound()
 
 
                   
          wind_change_timer += 1
          if wind_change_timer >= wind_change_interval:
             wind_change_timer = 0
-            # Small random wind variation (±0.1)
             wind_variation = random.uniform(-0.1, 0.1)
             current_wind = max(0.1, min(1.0, wind_strength + wind_variation))  # Keep between 0.1 and 1.0
             grass_area.set_wind(current_wind, wind_direction)
@@ -783,7 +790,8 @@ def main(cond=None):
                                  gold -= costregister["citizen"][1]
                               else:
 
-                              
+                                 notenough.play_no_gold_sound()
+
                                  displaynotenough = True
                                  notenoughtime = time
                               
@@ -820,6 +828,7 @@ def main(cond=None):
                                     pass#rint("++++++++++NO++++++++++++++++++")
                                  else:
                                     displaynotenough = True
+                                    notenough.play_no_gold_sound()
                                     notenoughtime = time
                                  
 
@@ -855,6 +864,7 @@ def main(cond=None):
                                     
                                  else:
                                     displaynotenough = True
+                                    notenough.play_no_gold_sound()
                                     notenoughtime = time
 
 
@@ -885,6 +895,7 @@ def main(cond=None):
                                     
                                  else:
                                     displaynotenough = True
+                                    notenough.play_no_gold_sound()
                                     notenoughtime = time
                               if cursor.getCollisionRect().colliderect(cannonbutton.getCollisionRect()):
                                  
@@ -912,6 +923,7 @@ def main(cond=None):
                                     
                                  else:
                                     displaynotenough = True
+                                    notenough.play_no_gold_sound()
                                     notenoughtime = time
                               
                                  

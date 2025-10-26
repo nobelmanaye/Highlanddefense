@@ -23,7 +23,9 @@ class panel(object):
       self.position = Vector2(0,0)
       self.position.x = xposition
       self.position.y = yposition
+      self.velocity = Vector2(0,0)
       self.dead = False
+      self.type = "Static"
       
       if secondpath is not None:
          
@@ -61,13 +63,39 @@ class panel(object):
       Returns the height of the orb
       '''
       return self.image.get_height()
-   def draw(self,surface, prereq = True,selected =False):
+   def play_no_gold_sound(self):
+    """Play sound when not enough gold"""
+    pygame.mixer.pre_init()
+    pygame.mixer.init()
+    try:
+        no_gold_sound = pygame.mixer.Sound(os.path.join("sound", "notifications", "no_gold.wav"))
+        no_gold_sound.set_volume(1)  # Adjust volume as needed
+        no_gold_sound.play()
+    except Exception as e:
+        print(f"Could not play no_gold sound: {e}")
+   def stop(self):
+      self.type = "Static"
+
+   def draw(self,surface, prereq = True,selected =False,time= None):
       '''
        Draws the orb
       '''
-      self.image.set_colorkey(self.image.get_at((0,0)))
-      
-      
+      #for moving error messages like not enough resources
+    # for moving error messages like not enough resources
+      if self.type == "Dynamic":
+        self.image.set_colorkey(self.image.get_at((0,0)))
+        
+        oldpos = list(self.position)
+
+        # Use the time parameter if provided, otherwise use pygame.time
+
+        elapsed_seconds = pygame.time.get_ticks() / 1000.0
+
+        # Update the position
+        xnewpos = oldpos[0] + (self.velocity.x * elapsed_seconds)
+        ynewpos = oldpos[1] + (self.velocity.y * elapsed_seconds)
+
+        self.position = (xnewpos, ynewpos)
       if self.dead == False and prereq ==True:
 
          
